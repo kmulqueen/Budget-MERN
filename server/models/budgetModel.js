@@ -24,18 +24,6 @@ const budgetSchema = mongoose.Schema({
   emergencyFund: {
     type: Number,
   },
-  debits: [
-    {
-      description: { type: String },
-      amount: { type: Number },
-    },
-  ],
-  credits: [
-    {
-      description: { type: String },
-      amount: { type: Number },
-    },
-  ],
 });
 
 const Budget = mongoose.model("Budget", budgetSchema);
