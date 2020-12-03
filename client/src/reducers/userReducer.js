@@ -36,6 +36,7 @@ export const userRegisterReducer = (state = {}, action) => {
     case USER_REGISTER_REQUEST:
       return {
         loading: true,
+        error: null,
       };
     case USER_REGISTER_SUCCESS:
       return {

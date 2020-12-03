@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Form, Container, Button, Spinner } from "react-bootstrap";
+import { Form, Container, Button, Spinner, Row, Col } from "react-bootstrap";
 import Message from "../../components/Message";
 import { loginUser } from "../../actions/userActions";
+import { Link } from "react-router-dom";
 
 const LoginPage = ({ history }) => {
   const [email, setEmail] = useState("");
@@ -53,6 +54,12 @@ const LoginPage = ({ history }) => {
           Login
         </Button>
       </Form>
+      <Row className="py-3">
+        <Col>
+          Don't have an account?{" "}
+          <Link to="/register">Create an account here.</Link>
+        </Col>
+      </Row>
     </Container>
   );
 };
