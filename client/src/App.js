@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import { Container } from "react-bootstrap";
+import HomePage from "./pages/HomePage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import BudgetViewPage from "./pages/BudgetViewPage";
@@ -16,6 +17,7 @@ function App() {
           <Route path="/register" exact component={RegisterPage} />
           <Route path="/budget/view" exact component={BudgetViewPage} />
           <Route path="/budget/update" exact component={EditBudgetPage} />
+          <Route path="/" exact component={HomePage} />
         </Container>
       </main>
     </Router>
