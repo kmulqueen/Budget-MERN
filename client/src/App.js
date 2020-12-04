@@ -3,6 +3,8 @@ import NavBar from "./components/NavBar";
 import { Container } from "react-bootstrap";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
+import BudgetViewPage from "./pages/BudgetViewPage";
+import EditBudgetPage from "./pages/EditBudgetPage";
 
 function App() {
   return (
@@ -12,6 +14,8 @@ function App() {
         <Container>
           <Route path="/login" exact component={LoginPage} />
           <Route path="/register" exact component={RegisterPage} />
+          <Route path="/budget/view" exact component={BudgetViewPage} />
+          <Route path="/budget/update" exact component={EditBudgetPage} />
         </Container>
       </main>
     </Router>

@@ -22,10 +22,15 @@ const NavBar = () => {
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ml-auto">
-          <LinkContainer to="/budget">
-            <Nav.Link>Budget</Nav.Link>
-          </LinkContainer>
-          <NavDropdown title="Transactions" id="basic-nav-dropdown">
+          <NavDropdown title="Budget" className="basic-nav-dropdown">
+            <LinkContainer to="/budget/view">
+              <NavDropdown.Item>View Budget</NavDropdown.Item>
+            </LinkContainer>
+            <LinkContainer to="/budget/update">
+              <NavDropdown.Item>Update Budget</NavDropdown.Item>
+            </LinkContainer>
+          </NavDropdown>
+          <NavDropdown title="Transactions" className="basic-nav-dropdown">
             <LinkContainer to="/transactions/new">
               <NavDropdown.Item>New Transaction</NavDropdown.Item>
             </LinkContainer>
