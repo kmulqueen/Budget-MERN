@@ -7,4 +7,5 @@ router.route("/create").post(protect, budgetController.createBudget);
 
 // Matches with "/api/budget"
 router.route("/").get(protect, budgetController.getUserBudget);
+
 module.exports = router;

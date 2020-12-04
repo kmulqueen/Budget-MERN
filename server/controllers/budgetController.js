@@ -13,35 +13,42 @@ module.exports = {
         message: "At least one income and one expense item is required.",
       });
     } else {
-      // Calculate total income & total expenses
-      const totalMonthlyIncome = monthlyIncome.reduce(
-        (acc, item) => acc + item.amount,
-        0
-      );
-      const totalMonthlyExpenses = monthlyExpenses.reduce(
-        (acc, item) => acc + item.amount,
-        0
-      );
+      // Check if the user has already created a budget
+      const alreadyCreated = await Budget.find({ user: req.user._id });
 
-      // Calculate discretionary fund
-      const discretionaryFund = totalMonthlyIncome - totalMonthlyExpenses;
+      if (alreadyCreated) {
+        res.status(400).json({ message: "User has already created a budget." });
+      } else {
+        // Calculate total income & total expenses
+        const totalMonthlyIncome = monthlyIncome.reduce(
+          (acc, item) => acc + item.amount,
+          0
+        );
+        const totalMonthlyExpenses = monthlyExpenses.reduce(
+          (acc, item) => acc + item.amount,
+          0
+        );
 
-      // Calculate emergency fund
-      const emergencyFund = totalMonthlyExpenses * 6;
+        // Calculate discretionary fund
+        const discretionaryFund = totalMonthlyIncome - totalMonthlyExpenses;
 
-      // Create budget
-      const budget = new Budget({
-        user: req.user._id,
-        monthlyIncome,
-        monthlyExpenses,
-        discretionaryFund,
-        emergencyFund,
-      });
+        // Calculate emergency fund
+        const emergencyFund = totalMonthlyExpenses * 6;
 
-      const createdBudget = await budget.save();
+        // Create budget
+        const budget = new Budget({
+          user: req.user._id,
+          monthlyIncome,
+          monthlyExpenses,
+          discretionaryFund,
+          emergencyFund,
+        });
 
-      // Return 201 status & created budget
-      res.status(201).json(createdBudget);
+        const createdBudget = await budget.save();
+
+        // Return 201 status & created budget
+        res.status(201).json(createdBudget);
+      }
     }
   },
   getUserBudget: async function (req, res) {
