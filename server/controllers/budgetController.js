@@ -9,11 +9,9 @@ module.exports = {
       (monthlyIncome && monthlyIncome.length === 0) ||
       (monthlyExpenses && monthlyExpenses.length === 0)
     ) {
-      res
-        .status(400)
-        .json({
-          message: "At least one income and one expense item is required.",
-        });
+      res.status(400).json({
+        message: "At least one income and one expense item is required.",
+      });
     } else {
       // Calculate total income & total expenses
       const totalMonthlyIncome = monthlyIncome.reduce(
@@ -44,6 +42,15 @@ module.exports = {
 
       // Return 201 status & created budget
       res.status(201).json(createdBudget);
+    }
+  },
+  getUserBudget: async function (req, res) {
+    const budget = await Budget.findOne({ user: req.user._id });
+
+    if (!budget) {
+      res.status(404).json({ message: "Budget not found for this user." });
+    } else {
+      res.status(200).json(budget);
     }
   },
 };
