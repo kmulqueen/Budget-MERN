@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Form, Container, Button, Spinner, Row, Col } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import Message from "../../components/Message";
 import { loginUser } from "../../actions/userActions";
-import { Link } from "react-router-dom";
+import { getUserBudget } from "../../actions/budgetActions";
 
 const LoginPage = ({ history }) => {
   const [email, setEmail] = useState("");
@@ -13,12 +14,15 @@ const LoginPage = ({ history }) => {
 
   const userLogin = useSelector((state) => state.userLogin);
   const { loading, error, userInfo } = userLogin;
+  const userBudget = useSelector((state) => state.userBudget);
+  const { budget } = userBudget;
 
   useEffect(() => {
     if (userInfo) {
+      dispatch(getUserBudget());
       history.push("/");
     }
-  }, [history, userLogin]);
+  }, [history, userLogin, userInfo, budget]);
 
   const submitHandler = (e) => {
     e.preventDefault();
