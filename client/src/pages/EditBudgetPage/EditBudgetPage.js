@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Form, Button, Container, InputGroup, Row, Col } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import Message from "../../components/Message";
+import { createUserBudget } from "../../actions/budgetActions";
 
 const EditBudgetPage = () => {
   const [monthlyIncomeDescription, setMonthlyIncomeDescription] = useState("");
@@ -16,9 +18,31 @@ const EditBudgetPage = () => {
   const [incError, setIncError] = useState(null);
   const [expMessage, setExpMessage] = useState(null);
   const [expError, setExpError] = useState(null);
+  const [message, setMessage] = useState(null);
+
+  const userBudget = useSelector((state) => state.userBudget);
+  const { budget } = userBudget;
+
+  const dispatch = useDispatch();
 
   const submitHandler = (e) => {
     e.preventDefault();
+    setMessage(null);
+    // Check if user is updating or creating new budget
+    if (!budget) {
+      // Check that the length of incomeItems & expenseItems is >=1
+      if (incomeItems.length >= 1 && expenseItems.length >= 1) {
+        // Create new budget
+        dispatch(createUserBudget(incomeItems, expenseItems));
+      } else {
+        // Prompt user to add at least 1 income & expense item
+        setMessage(
+          "Please add at least 1 income item and at least 1 expense item to create a budget."
+        );
+      }
+    } else {
+      // Update existing budget
+    }
   };
 
   const incomeHandler = () => {
@@ -152,9 +176,16 @@ const EditBudgetPage = () => {
             </Button>
           </Col>
         </Row>
-        <Button type="submit" variant="success">
-          Update Budget
-        </Button>
+        {message && <Message variant="danger">{message}</Message>}
+        {!budget ? (
+          <Button type="submit" variant="success">
+            Create Budget
+          </Button>
+        ) : (
+          <Button type="submit" variant="success">
+            Update Budget
+          </Button>
+        )}
       </Form>
     </Container>
   );

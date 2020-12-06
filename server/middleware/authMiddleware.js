@@ -25,15 +25,17 @@ module.exports = {
         next();
       } catch (error) {
         // If no Bearer token was verified return 401 status
-        res
-          .status(401)
-          .json({ message: "Unauthorized request. Please login." });
+        res.status(401).json({
+          message: "Unauthorized request. Please login.",
+        });
       }
     }
 
     // If no token found return 401 status
     if (!token) {
-      res.status(401).json({ message: "Unauthorized request. Please login." });
+      res.status(401).json({
+        message: "Unauthorized request. Please login.",
+      });
     }
   },
 };

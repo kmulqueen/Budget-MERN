@@ -14,7 +14,7 @@ module.exports = {
       });
     } else {
       // Check if the user has already created a budget
-      const alreadyCreated = await Budget.find({ user: req.user._id });
+      const alreadyCreated = await Budget.findOne({ user: req.user._id });
 
       if (alreadyCreated) {
         res.status(400).json({ message: "User has already created a budget." });
