@@ -6,6 +6,9 @@ import {
   CREATE_USER_BUDGET_REQUEST,
   CREATE_USER_BUDGET_SUCCESS,
   CREATE_USER_BUDGET_FAIL,
+  ADD_ITEMS_USER_BUDGET_REQUEST,
+  ADD_ITEMS_USER_BUDGET_SUCCESS,
+  ADD_ITEMS_USER_BUDGET_FAIL,
 } from "../actionTypes/budgetTypes";
 
 export const userBudgetReducer = (state = {}, action) => {
@@ -38,6 +41,21 @@ export const userBudgetReducer = (state = {}, action) => {
         budget: action.payload,
       };
     case CREATE_USER_BUDGET_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+    // Add Items User Budget Actions
+    case ADD_ITEMS_USER_BUDGET_REQUEST:
+      return {
+        loading: true,
+      };
+    case ADD_ITEMS_USER_BUDGET_SUCCESS:
+      return {
+        loading: false,
+        budget: action.payload,
+      };
+    case ADD_ITEMS_USER_BUDGET_FAIL:
       return {
         loading: false,
         error: action.payload,

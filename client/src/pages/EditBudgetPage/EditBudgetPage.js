@@ -3,7 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { Form, Button, Container, InputGroup, Row, Col } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import Message from "../../components/Message";
-import { createUserBudget } from "../../actions/budgetActions";
+import {
+  createUserBudget,
+  addNewBudgetItems,
+} from "../../actions/budgetActions";
 
 const EditBudgetPage = ({ history }) => {
   const [monthlyIncomeDescription, setMonthlyIncomeDescription] = useState("");
@@ -43,7 +46,19 @@ const EditBudgetPage = ({ history }) => {
         );
       }
     } else {
-      // Update existing budget
+      // Check if any items have been added
+      if (incomeItems.length >= 1 || expenseItems.length >= 1) {
+        // Clear any errors/messages if any
+        setMessage(null);
+        // Update existing budget
+        dispatch(addNewBudgetItems(incomeItems, expenseItems));
+        // Redirect to home page
+        history.push("/");
+      } else {
+        setMessage(
+          "Please add at least 1 income or expense item to update your budget."
+        );
+      }
     }
   };
 
