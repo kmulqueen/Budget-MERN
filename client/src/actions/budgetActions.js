@@ -9,6 +9,9 @@ import {
   ADD_ITEMS_USER_BUDGET_REQUEST,
   ADD_ITEMS_USER_BUDGET_SUCCESS,
   ADD_ITEMS_USER_BUDGET_FAIL,
+  GET_ITEM_USER_BUDGET_REQUEST,
+  GET_ITEM_USER_BUDGET_SUCCESS,
+  GET_ITEM_USER_BUDGET_FAIL,
 } from "../actionTypes/budgetTypes";
 
 export const getUserBudget = () => async (dispatch, getState) => {
@@ -125,6 +128,43 @@ export const addNewBudgetItems = (incomeItems, expenseItems) => async (
   } catch (error) {
     dispatch({
       type: ADD_ITEMS_USER_BUDGET_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const getUserBudgetItem = (budgetID, itemID) => async (
+  dispatch,
+  getState
+) => {
+  try {
+    dispatch({ type: GET_ITEM_USER_BUDGET_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const res = await axios.get(
+      `/api/budget/get-item/${budgetID}/${itemID}`,
+      config
+    );
+
+    dispatch({
+      type: GET_ITEM_USER_BUDGET_SUCCESS,
+      payload: res.data,
+    });
+  } catch (error) {
+    dispatch({
+      type: GET_ITEM_USER_BUDGET_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
