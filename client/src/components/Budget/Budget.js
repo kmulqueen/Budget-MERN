@@ -1,10 +1,9 @@
 import React from "react";
-import { Table } from "react-bootstrap";
+import { Table, Row, Col } from "react-bootstrap";
 
 const Budget = ({ userBudget }) => {
   return (
     <>
-      <h1 className="my-3">Budget</h1>
       <h3>Monthly Income</h3>
       <Table striped bordered hover className="my-3">
         <thead>
@@ -39,6 +38,10 @@ const Budget = ({ userBudget }) => {
           ))}
         </tbody>
       </Table>
+      <Row>
+        <Col>Discretionary Funds: ${userBudget.discretionaryFund}</Col>
+        <Col>Emergency Fund: ${userBudget.emergencyFund}</Col>
+      </Row>
     </>
   );
 };

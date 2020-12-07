@@ -60,4 +60,60 @@ module.exports = {
       res.status(200).json(budget);
     }
   },
+  addBudgetItems: async function (req, res) {
+    const budget = await Budget.findOne({ user: req.user._id });
+
+    if (budget) {
+      // Initialize income and expense items
+      let newIncomeItems, newExpenseItems;
+
+      // Check for income items from req.body
+      if (req.body.incomeItems) {
+        // Assign newIncomeItems to the request income items
+        newIncomeItems = req.body.incomeItems;
+        // Spread new items into existing monthlyIncome array
+        budget.monthlyIncome = [...budget.monthlyIncome, ...newIncomeItems];
+      } else {
+        // Monthly income stays as it was
+        budget.monthlyIncome = budget.monthlyIncome;
+      }
+
+      // Check for expense items from req.body
+      if (req.body.expenseItems) {
+        // Assign newExpenseItems to the request expense items
+        newExpenseItems = req.body.expenseItems;
+        // Spread new items into existing monthlyExpenses array
+        budget.monthlyExpenses = [
+          ...budget.monthlyExpenses,
+          ...newExpenseItems,
+        ];
+      } else {
+        // Monthly expenses stays as it was
+        budget.monthlyExpenses = budget.monthlyExpenses;
+      }
+
+      // Calculate new total monthly income
+      const totalMonthlyIncome = budget.monthlyIncome.reduce(
+        (acc, item) => acc + item.amount,
+        0
+      );
+      // Calculate new total monthly expenses
+      const totalMonthlyExpenses = budget.monthlyExpenses.reduce(
+        (acc, item) => acc + item.amount,
+        0
+      );
+      // Calculate new discretionary fund & update discretionary fund in budget
+      const discretionaryFund = totalMonthlyIncome - totalMonthlyExpenses;
+      budget.discretionaryFund = discretionaryFund;
+      // Calculate new emergency fund & update emergency fund in budget
+      const emergencyFund = totalMonthlyExpenses * 6;
+      budget.emergencyFund = emergencyFund;
+      // Save updated budget
+      const updatedBudget = await budget.save();
+
+      res.json(updatedBudget);
+    } else {
+      res.status(404).json({ message: "Budget not found." });
+    }
+  },
 };
