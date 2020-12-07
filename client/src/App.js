@@ -6,6 +6,7 @@ import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import BudgetViewPage from "./pages/BudgetViewPage";
 import EditBudgetPage from "./pages/EditBudgetPage";
+import EditBudgetItemPage from "./pages/EditBudgetItemPage";
 
 function App() {
   return (
@@ -17,6 +18,11 @@ function App() {
           <Route path="/register" exact component={RegisterPage} />
           <Route path="/budget/view" exact component={BudgetViewPage} />
           <Route path="/budget/update" exact component={EditBudgetPage} />
+          <Route
+            path="/budget/edit-item/:budgetid/:itemid"
+            exact
+            component={EditBudgetItemPage}
+          />
           <Route path="/" exact component={HomePage} />
         </Container>
       </main>

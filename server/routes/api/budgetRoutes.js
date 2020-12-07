@@ -2,6 +2,11 @@ const router = require("express").Router();
 const budgetController = require("../../controllers/budgetController");
 const { protect } = require("../../middleware/authMiddleware");
 
+// Matches with "/api/budget/edit-item/:budgetid/:itemid"
+router
+  .route("/edit-item/:budgetid/:itemid")
+  .get(protect, budgetController.getBudgetItem);
+
 // Matches with "/api/budget/create"
 router.route("/create").post(protect, budgetController.createBudget);
 

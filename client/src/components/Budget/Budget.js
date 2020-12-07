@@ -1,5 +1,7 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { Table, Row, Col } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 const Budget = ({ userBudget }) => {
   return (
@@ -10,6 +12,7 @@ const Budget = ({ userBudget }) => {
           <tr>
             <th>Description</th>
             <th>Amount</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -17,6 +20,11 @@ const Budget = ({ userBudget }) => {
             <tr key={item._id}>
               <td>{item.description}</td>
               <td>${item.amount}</td>
+              <td>
+                <Link to={`/budget/edit-item/${userBudget._id}/${item._id}`}>
+                  Edit
+                </Link>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -27,6 +35,7 @@ const Budget = ({ userBudget }) => {
           <tr>
             <th>Description</th>
             <th>Amount</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -34,6 +43,11 @@ const Budget = ({ userBudget }) => {
             <tr key={item._id}>
               <td>{item.description}</td>
               <td>${item.amount}</td>
+              <td>
+                <Link to={`/budget/edit-item/${userBudget._id}/${item._id}`}>
+                  Edit
+                </Link>
+              </td>
             </tr>
           ))}
         </tbody>

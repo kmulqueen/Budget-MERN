@@ -116,4 +116,23 @@ module.exports = {
       res.status(404).json({ message: "Budget not found." });
     }
   },
+  getBudgetItem: async function (req, res) {
+    // Initialize income/expense item variables
+    let budgetIncomeItem, budgetExpenseItem;
+    // Find budget by budgetid params
+    await Budget.findOne({ _id: req.params.budgetid }, function (err, budget) {
+      // Try to find item in monthlyIncome array by itemid params
+      budgetIncomeItem = budget.monthlyIncome.id(req.params.itemid);
+      // Try to find item in monthlyExpenses array
+      budgetExpenseItem = budget.monthlyExpenses.id(req.params.itemid);
+    });
+
+    // Return found budget item
+    if (budgetIncomeItem) {
+      res.json(budgetIncomeItem);
+    }
+    if (budgetExpenseItem) {
+      res.json(budgetExpenseItem);
+    }
+  },
 };
