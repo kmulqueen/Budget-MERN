@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Form, Button, Container, InputGroup, Row, Col } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import Message from "../../components/Message";
 import { createUserBudget } from "../../actions/budgetActions";
 
-const EditBudgetPage = () => {
+const EditBudgetPage = ({ history }) => {
   const [monthlyIncomeDescription, setMonthlyIncomeDescription] = useState("");
   const [monthlyIncomeAmount, setMonthlyIncomeAmount] = useState(0);
   const [monthlyExpenseDescription, setMonthlyExpenseDescription] = useState(
@@ -20,6 +20,8 @@ const EditBudgetPage = () => {
   const [expError, setExpError] = useState(null);
   const [message, setMessage] = useState(null);
 
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
   const userBudget = useSelector((state) => state.userBudget);
   const { budget } = userBudget;
 
@@ -110,6 +112,14 @@ const EditBudgetPage = () => {
       setMonthlyExpenseAmount(0);
     }
   };
+
+  useEffect(() => {
+    // If user isn't logged in, redirect to login page
+    if (!userInfo) {
+      history.push("/login");
+    }
+  }, [userInfo, history]);
+
   return (
     <Container>
       <LinkContainer to="/budget/view">
