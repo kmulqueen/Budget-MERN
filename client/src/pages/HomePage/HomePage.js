@@ -11,7 +11,7 @@ const HomePage = () => {
   const { userInfo, loading: loginLoading, error: loginError } = userLogin;
 
   const userBudget = useSelector((state) => state.userBudget);
-  const { budget, error: budgetError, loading: budgetLoading } = userBudget;
+  const { budget, loading: budgetLoading } = userBudget;
 
   const HomePageAuthenticated = () => {
     return (

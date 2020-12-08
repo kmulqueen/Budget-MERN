@@ -22,7 +22,7 @@ const LoginPage = ({ history }) => {
       dispatch(getUserBudget());
       history.push("/");
     }
-  }, [history, userLogin, userInfo, budget]);
+  }, [history, dispatch, userLogin, userInfo, budget]);
 
   const submitHandler = (e) => {
     e.preventDefault();

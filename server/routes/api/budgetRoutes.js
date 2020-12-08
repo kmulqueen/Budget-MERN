@@ -2,10 +2,15 @@ const router = require("express").Router();
 const budgetController = require("../../controllers/budgetController");
 const { protect } = require("../../middleware/authMiddleware");
 
-// Matches with "/api/budget/get-item/:budgetid/:itemid"
+// Matches with "/api/budget/get-item/:itemtype/:budgetid/:itemid"
 router
-  .route("/get-item/:budgetid/:itemid")
+  .route("/get-item/:itemtype/:budgetid/:itemid")
   .get(protect, budgetController.getBudgetItem);
+
+// Matches with "/api/budget/update-item/:itemtype/:budgetid/:itemid"
+router
+  .route("/update-item/:itemtype/:budgetid/:itemid")
+  .put(protect, budgetController.updateBudgetItem);
 
 // Matches with "/api/budget/create"
 router.route("/create").post(protect, budgetController.createBudget);

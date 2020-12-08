@@ -2,25 +2,45 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Container, Form, Button, Col, Row } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-import { getUserBudgetItem } from "../../actions/budgetActions";
+import {
+  getUserBudgetItem,
+  updateBudgetItem,
+  updateBudgetItemReset,
+} from "../../actions/budgetActions";
 
 const EditBudgetItemPage = ({ history, match }) => {
   const budgetID = match.params.budgetid;
   const itemID = match.params.itemid;
+  const type = match.params.itemtype;
 
   const dispatch = useDispatch();
 
-  const userBudgetItem = useSelector((state) => state.userBudgetItem);
-  const { budgetItem } = userBudgetItem;
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
+  const userGetBudgetItem = useSelector((state) => state.userGetBudgetItem);
+  const { budgetItem } = userGetBudgetItem;
+  const userUpdateBudgetItem = useSelector(
+    (state) => state.userUpdateBudgetItem
+  );
+  const { success: successUpdate } = userUpdateBudgetItem;
+  const userDeleteBudgetItem = useSelector(
+    (state) => state.userDeleteBudgetItem
+  );
+  const { success: successDelete } = userDeleteBudgetItem;
 
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState(0);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    // Update budget item
+    // Create updated budget item
+    const updatedItem = {
+      _id: budgetItem._id,
+      description,
+      amount,
+    };
+    //Update Item
+    dispatch(updateBudgetItem(budgetID, itemID, type, updatedItem));
   };
 
   const deleteHandler = () => {
@@ -32,22 +52,37 @@ const EditBudgetItemPage = ({ history, match }) => {
     if (!userInfo) {
       history.push("/login");
     }
-    // If no budget item is found, get budget item
-    if (!budgetItem) {
-      dispatch(getUserBudgetItem(budgetID, itemID));
+    if (successUpdate) {
+      dispatch(updateBudgetItemReset());
+      history.push("/");
     } else {
-      // Set the description & amount to the budget item description & amount
-      setDescription(budgetItem.description);
-      setAmount(budgetItem.amount);
+      if (!budgetItem || budgetItem._id !== itemID) {
+        dispatch(getUserBudgetItem(budgetID, itemID, type));
+      } else {
+        setDescription(budgetItem.description);
+        setAmount(budgetItem.amount);
+      }
     }
-  }, [dispatch, budgetID, itemID, history, budgetItem, userInfo]);
+  }, [
+    dispatch,
+    history,
+    userInfo,
+    budgetItem,
+    budgetID,
+    itemID,
+    type,
+    successUpdate,
+  ]);
 
   return (
     <Container>
-      <LinkContainer to="/">
-        <Button variant="outline-secondary">Go Back</Button>
+      <LinkContainer to="/budget/view">
+        <Button variant="outline-secondary" className="mb-4">
+          View Budget
+        </Button>
       </LinkContainer>
-      <Form onSubmit={submitHandler} className="my-4">
+
+      <Form onSubmit={submitHandler}>
         <Form.Group controlId="itemDescription">
           <Form.Label>Description</Form.Label>
           <Form.Control

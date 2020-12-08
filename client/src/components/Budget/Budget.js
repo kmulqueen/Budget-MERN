@@ -1,5 +1,4 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { Table, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
@@ -21,7 +20,9 @@ const Budget = ({ userBudget }) => {
               <td>{item.description}</td>
               <td>${item.amount}</td>
               <td>
-                <Link to={`/budget/edit-item/${userBudget._id}/${item._id}`}>
+                <Link
+                  to={`/budget/edit-item/inc/${userBudget._id}/${item._id}`}
+                >
                   Edit
                 </Link>
               </td>
@@ -44,7 +45,9 @@ const Budget = ({ userBudget }) => {
               <td>{item.description}</td>
               <td>${item.amount}</td>
               <td>
-                <Link to={`/budget/edit-item/${userBudget._id}/${item._id}`}>
+                <Link
+                  to={`/budget/edit-item/exp/${userBudget._id}/${item._id}`}
+                >
                   Edit
                 </Link>
               </td>

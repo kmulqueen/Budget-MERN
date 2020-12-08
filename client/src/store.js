@@ -4,15 +4,19 @@ import { composeWithDevTools } from "redux-devtools-extension";
 
 import { userRegisterReducer, userLoginReducer } from "./reducers/userReducer";
 import {
-  userBudgetItemReducer,
+  userGetBudgetItemReducer,
   userBudgetReducer,
+  userUpdateBudgetItemReducer,
+  userDeleteBudgetItemReducer,
 } from "./reducers/budgetReducer";
 
 const reducer = combineReducers({
   userRegister: userRegisterReducer,
   userLogin: userLoginReducer,
   userBudget: userBudgetReducer,
-  userBudgetItem: userBudgetItemReducer,
+  userGetBudgetItem: userGetBudgetItemReducer,
+  userUpdateBudgetItem: userUpdateBudgetItemReducer,
+  userDeleteBudgetItem: userDeleteBudgetItemReducer,
 });
 
 const middleware = [thunk];

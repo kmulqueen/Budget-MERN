@@ -19,7 +19,7 @@ function App() {
           <Route path="/budget/view" exact component={BudgetViewPage} />
           <Route path="/budget/update" exact component={EditBudgetPage} />
           <Route
-            path="/budget/edit-item/:budgetid/:itemid"
+            path="/budget/edit-item/:itemtype/:budgetid/:itemid"
             exact
             component={EditBudgetItemPage}
           />

@@ -12,6 +12,15 @@ import {
   GET_ITEM_USER_BUDGET_REQUEST,
   GET_ITEM_USER_BUDGET_SUCCESS,
   GET_ITEM_USER_BUDGET_FAIL,
+  GET_ITEM_USER_BUDGET_RESET,
+  UPDATE_ITEM_USER_BUDGET_REQUEST,
+  UPDATE_ITEM_USER_BUDGET_SUCCESS,
+  UPDATE_ITEM_USER_BUDGET_FAIL,
+  UPDATE_ITEM_USER_BUDGET_RESET,
+  DELETE_ITEM_USER_BUDGET_REQUEST,
+  DELETE_ITEM_USER_BUDGET_SUCCESS,
+  DELETE_ITEM_USER_BUDGET_FAIL,
+  DELETE_ITEM_USER_BUDGET_RESET,
 } from "../actionTypes/budgetTypes";
 
 export const userBudgetReducer = (state = {}, action) => {
@@ -68,7 +77,7 @@ export const userBudgetReducer = (state = {}, action) => {
   }
 };
 
-export const userBudgetItemReducer = (state = {}, action) => {
+export const userGetBudgetItemReducer = (state = {}, action) => {
   switch (action.type) {
     case GET_ITEM_USER_BUDGET_REQUEST:
       return {
@@ -84,6 +93,58 @@ export const userBudgetItemReducer = (state = {}, action) => {
         loading: false,
         error: action.payload,
       };
+    case GET_ITEM_USER_BUDGET_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
+
+export const userUpdateBudgetItemReducer = (
+  state = { budgetItem: {} },
+  action
+) => {
+  switch (action.type) {
+    case UPDATE_ITEM_USER_BUDGET_REQUEST:
+      return {
+        loading: true,
+      };
+    case UPDATE_ITEM_USER_BUDGET_SUCCESS:
+      return {
+        loading: false,
+        budgetItem: action.payload,
+        success: true,
+      };
+    case UPDATE_ITEM_USER_BUDGET_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+    case UPDATE_ITEM_USER_BUDGET_RESET:
+      return { budgetItem: {} };
+    default:
+      return state;
+  }
+};
+
+export const userDeleteBudgetItemReducer = (state = {}, action) => {
+  switch (action.type) {
+    case DELETE_ITEM_USER_BUDGET_REQUEST:
+      return {
+        loading: true,
+      };
+    case DELETE_ITEM_USER_BUDGET_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+      };
+    case DELETE_ITEM_USER_BUDGET_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+    case DELETE_ITEM_USER_BUDGET_RESET:
+      return {};
     default:
       return state;
   }

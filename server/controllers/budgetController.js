@@ -117,22 +117,104 @@ module.exports = {
     }
   },
   getBudgetItem: async function (req, res) {
-    // Initialize income/expense item variables
-    let budgetIncomeItem, budgetExpenseItem;
-    // Find budget by budgetid params
-    await Budget.findOne({ _id: req.params.budgetid }, function (err, budget) {
-      // Try to find item in monthlyIncome array by itemid params
-      budgetIncomeItem = budget.monthlyIncome.id(req.params.itemid);
-      // Try to find item in monthlyExpenses array
-      budgetExpenseItem = budget.monthlyExpenses.id(req.params.itemid);
-    });
-
-    // Return found budget item
-    if (budgetIncomeItem) {
-      res.json(budgetIncomeItem);
+    // Get the budget item type from req.params
+    const type = req.params.itemtype;
+    // Check for appropriate type
+    if (type === "inc") {
+      let budgetIncomeItem;
+      // Find budget by budgetid params
+      await Budget.findById(req.params.budgetid, function (err, budget) {
+        // Try to find item in monthlyIncome array by itemid params
+        budgetIncomeItem = budget.monthlyIncome.id(req.params.itemid);
+        // Check for error
+        if (err) {
+          res.status(422).json(err);
+        } else {
+          // If budget income item is found return item
+          if (budgetIncomeItem) {
+            res.json(budgetIncomeItem);
+          } else {
+            res.status(404).json({ message: "Income item not found." });
+          }
+        }
+      });
+    } else if (type === "exp") {
+      let budgetExpenseItem;
+      // Find budget by budgetid params
+      await Budget.findById(req.params.budgetid, function (err, budget) {
+        // Try to find item in monthlyExpenses array
+        budgetExpenseItem = budget.monthlyExpenses.id(req.params.itemid);
+        // Check for error
+        if (err) {
+          res.status(422).json(err);
+        } else {
+          // If budget expense item found return item
+          if (budgetExpenseItem) {
+            res.json(budgetExpenseItem);
+          } else {
+            res.status(404).json({ message: "Expense item not found." });
+          }
+        }
+      });
+    } else if (type !== "inc" || type !== "exp") {
+      // If the type isn't inc or exp throw 400 status
+      res.status(400).json({ message: "Invalid URL Parameters." });
     }
-    if (budgetExpenseItem) {
-      res.json(budgetExpenseItem);
+  },
+  updateBudgetItem: async function (req, res) {
+    // Get the budget item type from req.params
+    const type = req.params.itemtype;
+    // Initialize income & expense item variables
+    let budgetIncomeItem, budgetExpenseItem;
+    // Check for appropriate type
+    if (type === "inc") {
+      // Find budget by budgetid params
+      await Budget.findById(req.params.budgetid, async function (err, budget) {
+        // Try to find item in monthlyIncome array by itemid params
+        budgetIncomeItem = budget.monthlyIncome.id(req.params.itemid);
+        // Check for error
+        if (err) {
+          res.status(422).json(err);
+        }
+        // Check for income item
+        if (!budgetIncomeItem) {
+          res.status(404).json({ message: "Income item not found." });
+        } else {
+          // Set updated fields
+          budgetIncomeItem.description =
+            req.body.description || budgetIncomeItem.description;
+          budgetIncomeItem.amount = req.body.amount || budgetIncomeItem.amount;
+          // Save budget
+          await budget.save();
+          res.json(budgetIncomeItem);
+        }
+      });
+    } else if (type === "exp") {
+      // Find budget by budgetid params
+      await Budget.findById(req.params.budgetid, async function (err, budget) {
+        // Try to find item in monthlyExpenses array
+        budgetExpenseItem = budget.monthlyExpenses.id(req.params.itemid);
+        // Check for error
+        if (err) {
+          res.status(422).json(err);
+        }
+        // Check for expense item
+        if (!budgetExpenseItem) {
+          res.status(404).json({ message: "Expense item not found." });
+        } else {
+          // Set updated fields
+          budgetExpenseItem.description =
+            req.body.description || budgetExpenseItem.description;
+          budgetExpenseItem.amount =
+            req.body.amount || budgetExpenseItem.amount;
+          // Save budget
+          await budget.save();
+          res.json(budgetExpenseItem);
+        }
+      });
+    } else if (type !== "inc" || type !== "exp") {
+      // If the type isn't inc or exp throw 400 status
+      res.status(400).json({ message: "Invalid URL Parameters." });
     }
   },
 };
