@@ -205,7 +205,7 @@ export const updateBudgetItem = (budgetID, itemID, type, updatedItem) => async (
 
     const res = await axios.put(
       `/api/budget/update-item/${type}/${budgetID}/${itemID}`,
-      { updatedItem },
+      updatedItem,
       config
     );
 
@@ -226,6 +226,43 @@ export const updateBudgetItem = (budgetID, itemID, type, updatedItem) => async (
 
 export const updateBudgetItemReset = () => (dispatch) => {
   dispatch({ type: UPDATE_ITEM_USER_BUDGET_RESET });
+};
+
+export const deleteBudgetItem = (budgetID, itemID, type) => async (
+  dispatch,
+  getState
+) => {
+  try {
+    dispatch({ type: DELETE_ITEM_USER_BUDGET_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const res = await axios.delete(
+      `/api/budget/delete-item/${type}/${budgetID}/${itemID}`,
+      config
+    );
+
+    dispatch({
+      type: DELETE_ITEM_USER_BUDGET_SUCCESS,
+      payload: res.data,
+    });
+  } catch (error) {
+    dispatch({
+      type: DELETE_ITEM_USER_BUDGET_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
 };
 
 export const deleteBudgetItemReset = () => (dispatch) => {

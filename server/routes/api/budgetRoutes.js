@@ -12,6 +12,11 @@ router
   .route("/update-item/:itemtype/:budgetid/:itemid")
   .put(protect, budgetController.updateBudgetItem);
 
+// Matches with "/api/budget/delete-item/:itemtype/:budgetid/:itemid"
+router
+  .route("/delete-item/:itemtype/:budgetid/:itemid")
+  .delete(protect, budgetController.deleteBudgeItem);
+
 // Matches with "/api/budget/create"
 router.route("/create").post(protect, budgetController.createBudget);
 

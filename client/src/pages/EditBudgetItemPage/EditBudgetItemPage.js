@@ -4,8 +4,11 @@ import { Container, Form, Button, Col, Row } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import {
   getUserBudgetItem,
+  getBudgetItemReset,
   updateBudgetItem,
   updateBudgetItemReset,
+  deleteBudgetItem,
+  deleteBudgetItemReset,
 } from "../../actions/budgetActions";
 
 const EditBudgetItemPage = ({ history, match }) => {
@@ -45,6 +48,7 @@ const EditBudgetItemPage = ({ history, match }) => {
 
   const deleteHandler = () => {
     // Delete item by id
+    dispatch(deleteBudgetItem(budgetID, itemID, type));
   };
 
   useEffect(() => {
@@ -52,8 +56,13 @@ const EditBudgetItemPage = ({ history, match }) => {
     if (!userInfo) {
       history.push("/login");
     }
+
     if (successUpdate) {
+      dispatch(getBudgetItemReset());
       dispatch(updateBudgetItemReset());
+      history.push("/");
+    } else if (successDelete) {
+      dispatch(deleteBudgetItemReset());
       history.push("/");
     } else {
       if (!budgetItem || budgetItem._id !== itemID) {
@@ -72,6 +81,7 @@ const EditBudgetItemPage = ({ history, match }) => {
     itemID,
     type,
     successUpdate,
+    successDelete,
   ]);
 
   return (
