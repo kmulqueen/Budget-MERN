@@ -7,13 +7,12 @@ const transactionSchema = mongoose.Schema(
       ref: "User",
       required: true,
     },
-    transactions: [
-      {
-        transactionType: { type: String },
-        amount: { type: Number },
-        description: { type: String },
-      },
-    ],
+    transactionType: { type: String },
+    description: { type: String },
+    amount: { type: Number },
+    category: {
+      type: String,
+    },
     date: { type: Date },
   },
   { timestamps: true }
