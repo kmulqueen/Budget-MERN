@@ -20,6 +20,8 @@ const EditBudgetItemPage = ({ history, match }) => {
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
+  const userBudget = useSelector((state) => state.userBudget);
+  const { budget } = userBudget;
   const userGetBudgetItem = useSelector((state) => state.userGetBudgetItem);
   const { budgetItem } = userGetBudgetItem;
   const userUpdateBudgetItem = useSelector(
@@ -33,6 +35,7 @@ const EditBudgetItemPage = ({ history, match }) => {
 
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState(0);
+  const [category, setCategory] = useState({ name: "" });
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -41,6 +44,7 @@ const EditBudgetItemPage = ({ history, match }) => {
       _id: budgetItem._id,
       description,
       amount,
+      category,
     };
     //Update Item
     dispatch(updateBudgetItem(budgetID, itemID, type, updatedItem));
@@ -70,6 +74,9 @@ const EditBudgetItemPage = ({ history, match }) => {
       } else {
         setDescription(budgetItem.description);
         setAmount(budgetItem.amount);
+        setCategory({
+          name: budgetItem.category.name,
+        });
       }
     }
   }, [
@@ -108,6 +115,28 @@ const EditBudgetItemPage = ({ history, match }) => {
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
           />
+        </Form.Group>
+        <Form.Group controlId="itemCategory">
+          <Form.Label>Category</Form.Label>
+          {budget && budget.categories ? (
+            <Form.Control
+              as="select"
+              value={category.name}
+              onChange={(e) =>
+                setCategory({
+                  name: e.target.value,
+                })
+              }
+            >
+              {budget.categories.map((category) => (
+                <option key={category._id} value={category.name}>
+                  {category.name}
+                </option>
+              ))}
+            </Form.Control>
+          ) : (
+            <Form.Text>You don't have any categories created.</Form.Text>
+          )}
         </Form.Group>
         <Row>
           <Col>

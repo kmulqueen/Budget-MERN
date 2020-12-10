@@ -3,18 +3,21 @@ import { useDispatch, useSelector } from "react-redux";
 import { Form, Button, Container, InputGroup, Row, Col } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import Message from "../../components/Message";
-import {
-  createUserBudget,
-  addNewBudgetItems,
-} from "../../actions/budgetActions";
+import { addNewBudgetItems } from "../../actions/budgetActions";
 
 const EditBudgetPage = ({ history }) => {
   const [monthlyIncomeDescription, setMonthlyIncomeDescription] = useState("");
   const [monthlyIncomeAmount, setMonthlyIncomeAmount] = useState(0);
+  const [monthlyIncomeCategory, setMonthlyIncomeCategory] = useState({
+    name: "",
+  });
   const [monthlyExpenseDescription, setMonthlyExpenseDescription] = useState(
     ""
   );
   const [monthlyExpenseAmount, setMonthlyExpenseAmount] = useState(0);
+  const [monthlyExpenseCategory, setMonthlyExpenseCategory] = useState({
+    name: "",
+  });
   const [incomeItems, setIncomeItems] = useState([]);
   const [expenseItems, setExpenseItems] = useState([]);
   const [incMessage, setIncMessage] = useState(null);
@@ -33,32 +36,19 @@ const EditBudgetPage = ({ history }) => {
   const submitHandler = (e) => {
     e.preventDefault();
     setMessage(null);
-    // Check if user is updating or creating new budget
-    if (!budget) {
-      // Check that the length of incomeItems & expenseItems is >=1
-      if (incomeItems.length >= 1 && expenseItems.length >= 1) {
-        // Create new budget
-        dispatch(createUserBudget(incomeItems, expenseItems));
-      } else {
-        // Prompt user to add at least 1 income & expense item
-        setMessage(
-          "Please add at least 1 income item and at least 1 expense item to create a budget."
-        );
-      }
+
+    // Check if any items or categories have been added
+    if (incomeItems.length >= 1 || expenseItems.length >= 1) {
+      // Clear any errors/messages if any
+      setMessage(null);
+      // Update existing budget
+      dispatch(addNewBudgetItems(incomeItems, expenseItems));
+      // Redirect to home page
+      history.push("/");
     } else {
-      // Check if any items have been added
-      if (incomeItems.length >= 1 || expenseItems.length >= 1) {
-        // Clear any errors/messages if any
-        setMessage(null);
-        // Update existing budget
-        dispatch(addNewBudgetItems(incomeItems, expenseItems));
-        // Redirect to home page
-        history.push("/");
-      } else {
-        setMessage(
-          "Please add at least 1 income or expense item to update your budget."
-        );
-      }
+      setMessage(
+        "Please add at least 1 income or 1 expense item to update your budget."
+      );
     }
   };
 
@@ -69,19 +59,23 @@ const EditBudgetPage = ({ history }) => {
       monthlyIncomeDescription === null ||
       monthlyIncomeAmount <= 0 ||
       monthlyIncomeAmount === null ||
-      monthlyIncomeAmount === ""
+      monthlyIncomeAmount === "" ||
+      monthlyIncomeCategory.name === null ||
+      monthlyIncomeCategory.name === ""
     ) {
       // If not send error message
       setIncMessage(null);
       setIncError(
-        "Please ensure both fields are filled out and the amount is greater than 0"
+        "Please ensure all fields are filled out and the amount is greater than 0"
       );
     } else {
       // If so create a new income item and append it to the income items array
       setIncError(null);
+      setIncMessage(null);
       const newIncomeItem = {
         description: monthlyIncomeDescription,
         amount: monthlyIncomeAmount,
+        category: monthlyIncomeCategory,
       };
 
       setIncomeItems([...incomeItems, newIncomeItem]);
@@ -92,6 +86,10 @@ const EditBudgetPage = ({ history }) => {
       // Clear fields
       setMonthlyIncomeDescription("");
       setMonthlyIncomeAmount(0);
+      setMonthlyIncomeCategory((prevState) => ({
+        ...prevState,
+        name: "",
+      }));
     }
   };
 
@@ -102,17 +100,22 @@ const EditBudgetPage = ({ history }) => {
       monthlyExpenseDescription === null ||
       monthlyExpenseAmount <= 0 ||
       monthlyExpenseAmount === null ||
-      monthlyExpenseAmount === ""
+      monthlyExpenseAmount === "" ||
+      monthlyExpenseCategory.name === null ||
+      monthlyExpenseCategory.name === ""
     ) {
       setExpMessage(null);
       setExpError(
-        "Please ensure both fields are filled out and the amount is greater than 0"
+        "Please ensure all fields are filled out and the amount is greater than 0"
       );
     } else {
+      setExpMessage(null);
+      setIncError(null);
       // Create new expense item
       const newExpenseItem = {
         description: monthlyExpenseDescription,
         amount: monthlyExpenseAmount,
+        category: monthlyExpenseCategory,
       };
       // Append new expense item to expense items array
       setExpenseItems([...expenseItems, newExpenseItem]);
@@ -125,6 +128,10 @@ const EditBudgetPage = ({ history }) => {
       // Clear fields
       setMonthlyExpenseDescription("");
       setMonthlyExpenseAmount(0);
+      setMonthlyExpenseCategory((prevState) => ({
+        ...prevState,
+        name: "",
+      }));
     }
   };
 
@@ -164,9 +171,35 @@ const EditBudgetPage = ({ history }) => {
             onChange={(e) => setMonthlyIncomeAmount(e.target.value)}
           />
         </InputGroup>
+
+        <Form.Group controlId="incomeCategorySelect">
+          <Form.Label>Select Category for Income Item</Form.Label>
+          {budget && budget.categories ? (
+            <Form.Control
+              as="select"
+              onChange={(e) =>
+                setMonthlyIncomeCategory((prevState) => ({
+                  ...prevState,
+                  name: e.target.value,
+                }))
+              }
+            >
+              <option></option>
+              {budget.categories.map((category) => (
+                <option key={category._id}>{category.name}</option>
+              ))}
+            </Form.Control>
+          ) : !budget || !budget.categories ? (
+            <Form.Text>
+              You haven't created any categories. Please create at least one to
+              continue.
+            </Form.Text>
+          ) : null}
+        </Form.Group>
         <Button variant="outline-info" onClick={incomeHandler}>
           Add Income Item
         </Button>
+
         <h1 className="my-4">Monthly Expenses</h1>
         {expError && <Message variant="danger">{expError}</Message>}
         {expMessage && <Message variant="success">{expMessage}</Message>}
@@ -190,6 +223,30 @@ const EditBudgetPage = ({ history }) => {
             onChange={(e) => setMonthlyExpenseAmount(e.target.value)}
           />
         </InputGroup>
+        <Form.Group controlId="expenseCategorySelect">
+          <Form.Label>Select Category for Expense Item</Form.Label>
+          {budget && budget.categories ? (
+            <Form.Control
+              as="select"
+              onChange={(e) =>
+                setMonthlyExpenseCategory((prevState) => ({
+                  ...prevState,
+                  name: e.target.value,
+                }))
+              }
+            >
+              <option></option>
+              {budget.categories.map((category) => (
+                <option key={category._id}>{category.name}</option>
+              ))}
+            </Form.Control>
+          ) : !budget || !budget.categories ? (
+            <Form.Text>
+              You haven't created any categories. Please create at least one to
+              continue.
+            </Form.Text>
+          ) : null}
+        </Form.Group>
         <Row>
           <Col>
             <Button

@@ -11,6 +11,7 @@ const Budget = ({ userBudget }) => {
           <tr>
             <th>Description</th>
             <th>Amount</th>
+            <th>Category</th>
             <th></th>
           </tr>
         </thead>
@@ -19,6 +20,7 @@ const Budget = ({ userBudget }) => {
             <tr key={item._id}>
               <td>{item.description}</td>
               <td>${item.amount}</td>
+              <td>{item.category.name}</td>
               <td>
                 <Link
                   to={`/budget/edit-item/inc/${userBudget._id}/${item._id}`}
@@ -36,6 +38,7 @@ const Budget = ({ userBudget }) => {
           <tr>
             <th>Description</th>
             <th>Amount</th>
+            <th>Category</th>
             <th></th>
           </tr>
         </thead>
@@ -44,6 +47,7 @@ const Budget = ({ userBudget }) => {
             <tr key={item._id}>
               <td>{item.description}</td>
               <td>${item.amount}</td>
+              <td>{item.category.name}</td>
               <td>
                 <Link
                   to={`/budget/edit-item/exp/${userBudget._id}/${item._id}`}

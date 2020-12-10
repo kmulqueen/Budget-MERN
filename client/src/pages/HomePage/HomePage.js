@@ -1,19 +1,27 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
-import { Spinner, Button, Row, Col } from "react-bootstrap";
-import Message from "../../components/Message";
+import { Button } from "react-bootstrap";
 import Budget from "../../components/Budget";
-import { getUserBudget } from "../../actions/budgetActions";
+import {
+  getUserBudget,
+  createUserBudget,
+  createUserBudgetReset,
+} from "../../actions/budgetActions";
 
 const HomePage = ({ history }) => {
+  const dispatch = useDispatch();
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo, loading: loginLoading, error: loginError } = userLogin;
-
   const userBudget = useSelector((state) => state.userBudget);
-  const { budget, loading: budgetLoading } = userBudget;
+  const { budget, error: budgetError } = userBudget;
 
-  const dispatch = useDispatch();
+  const createHandler = () => {
+    dispatch(createUserBudget());
+    dispatch(createUserBudgetReset());
+    history.push("/budget/categories");
+  };
 
   useEffect(() => {
     if (!userInfo) {
@@ -21,30 +29,24 @@ const HomePage = ({ history }) => {
     } else {
       dispatch(getUserBudget());
     }
-  }, [userInfo, dispatch, history]);
+  }, [userInfo, history, dispatch]);
+
   return (
     <>
-      {loginLoading && <Spinner />}
-      {budgetLoading && <Spinner />}
-      {loginError && <Message variant="danger">{loginError}</Message>}
-      <h1>Hello, {userInfo.name}</h1>
-      {!budget ? (
-        <>
-          <Row>
-            <Col>
-              <p>You haven't created a budget yet.</p>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <LinkContainer to="/budget/update">
-                <Button>Create Budget</Button>
-              </LinkContainer>
-            </Col>
-          </Row>
-        </>
+      {!userInfo ? (
+        <Link to="/login">Please Login</Link>
       ) : (
-        budget && !budgetLoading && <Budget userBudget={budget} />
+        <>
+          <h1>Hello, {userInfo.name}</h1>
+          {!budget ? (
+            <>
+              <p>You haven't created a budget.</p>
+              <Button onClick={createHandler}>Create Budget</Button>
+            </>
+          ) : (
+            <Budget userBudget={budget} />
+          )}
+        </>
       )}
     </>
   );

@@ -1,8 +1,13 @@
 const mongoose = require("mongoose");
 
+const categorySchema = mongoose.Schema({
+  name: { type: String },
+});
+
 const incExpSchema = mongoose.Schema({
   description: { type: String },
   amount: { type: Number },
+  category: categorySchema,
 });
 
 const budgetSchema = mongoose.Schema({
@@ -13,6 +18,7 @@ const budgetSchema = mongoose.Schema({
   },
   monthlyIncome: [incExpSchema],
   monthlyExpenses: [incExpSchema],
+  categories: [categorySchema],
   discretionaryFund: {
     type: Number,
   },

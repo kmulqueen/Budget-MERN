@@ -1,68 +1,87 @@
 const Budget = require("../models").Budget;
 
 module.exports = {
-  createBudget: async function (req, res) {
-    const { monthlyIncome, monthlyExpenses } = req.body;
+  createCategory: async function (req, res) {
+    // Get categories from req.body
+    const { categories } = req.body;
 
-    // Check for empty income & expense arrays
-    if (
-      (monthlyIncome && monthlyIncome.length === 0) ||
-      (monthlyExpenses && monthlyExpenses.length === 0)
-    ) {
-      res.status(400).json({
-        message: "At least one income and one expense item is required.",
-      });
+    // Try to find user's budget
+    const userBudget = await Budget.findOne({ user: req.user._id });
+
+    // Check if user's budget was found
+    if (!userBudget) {
+      res.status(404).json({ message: "Budget not found." });
     } else {
-      // Check if the user has already created a budget
-      const alreadyCreated = await Budget.findOne({ user: req.user._id });
-
-      if (alreadyCreated) {
-        res.status(400).json({ message: "User has already created a budget." });
-      } else {
-        // Calculate total income & total expenses
-        const totalMonthlyIncome = monthlyIncome.reduce(
-          (acc, item) => acc + item.amount,
-          0
+      // Check if there are new categories to be added
+      if (categories.length >= 1) {
+        // Check if category already exists
+        let categoriesNames = categories.map((category) => category.name);
+        let alreadyExistingNames = userBudget.categories.map(
+          (category) => category.name
         );
-        const totalMonthlyExpenses = monthlyExpenses.reduce(
-          (acc, item) => acc + item.amount,
-          0
-        );
+        let isFound = [];
 
-        // Calculate discretionary fund
-        const discretionaryFund = totalMonthlyIncome - totalMonthlyExpenses;
-
-        // Calculate emergency fund
-        const emergencyFund = totalMonthlyExpenses * 6;
-
-        // Create budget
-        const budget = new Budget({
-          user: req.user._id,
-          monthlyIncome,
-          monthlyExpenses,
-          discretionaryFund,
-          emergencyFund,
+        categoriesNames.forEach((name) => {
+          for (const existingName of alreadyExistingNames) {
+            if (name === existingName) {
+              isFound.push(name);
+            }
+          }
         });
 
-        const createdBudget = await budget.save();
+        // If category name already exists throw 400 status
+        if (isFound.length >= 1) {
+          res
+            .status(400)
+            .json({ message: "You already have a category with that name." });
+        } else {
+          // Add new categories
+          userBudget.categories = [...userBudget.categories, ...categories];
 
-        // Return 201 status & created budget
-        res.status(201).json(createdBudget);
+          // Save budget
+          await userBudget.save();
+          res.json(userBudget);
+        }
+      } else {
+        // Return 400 status
+        res.status(400).json({ message: "Please create at least 1 category." });
       }
     }
   },
+  createBudget: async function (req, res) {
+    // Try to find budget with user id
+    const alreadyCreated = await Budget.findOne({ user: req.user._id });
+
+    // Check if user already has a budget created.
+    if (alreadyCreated) {
+      res.status(400).json({ message: "Budget already exists for this user." });
+    } else {
+      // Create new budget
+      const newBudget = new Budget({
+        user: req.user._id,
+      });
+
+      // Save budget
+      await newBudget.save();
+      res.json(newBudget);
+    }
+  },
   getUserBudget: async function (req, res) {
+    // Try to find budget by user's id
     const budget = await Budget.findOne({ user: req.user._id });
 
+    // Check for budget
     if (!budget) {
-      res.status(404).json({ message: "Budget not found for this user." });
+      res.status(404).json({ message: "Budget not found." });
     } else {
       res.status(200).json(budget);
     }
   },
   addBudgetItems: async function (req, res) {
+    // Try to find user's budget
     const budget = await Budget.findOne({ user: req.user._id });
 
+    // Check for budget
     if (budget) {
       // Initialize income and expense items
       let newIncomeItems, newExpenseItems;
@@ -102,15 +121,14 @@ module.exports = {
         (acc, item) => acc + item.amount,
         0
       );
-      // Calculate new discretionary fund & update discretionary fund in budget
+      // Calculate new discretionary fund
       const discretionaryFund = totalMonthlyIncome - totalMonthlyExpenses;
       budget.discretionaryFund = discretionaryFund;
-      // Calculate new emergency fund & update emergency fund in budget
+      // Calculate new emergency fund
       const emergencyFund = totalMonthlyExpenses * 6;
       budget.emergencyFund = emergencyFund;
       // Save updated budget
       const updatedBudget = await budget.save();
-
       res.json(updatedBudget);
     } else {
       res.status(404).json({ message: "Budget not found." });
@@ -184,6 +202,8 @@ module.exports = {
           budgetIncomeItem.description =
             req.body.description || budgetIncomeItem.description;
           budgetIncomeItem.amount = req.body.amount || budgetIncomeItem.amount;
+          budgetIncomeItem.category =
+            req.body.category || budgetIncomeItem.category;
           // Save budget
           await budget.save();
           res.json(budgetIncomeItem);
@@ -207,6 +227,8 @@ module.exports = {
             req.body.description || budgetExpenseItem.description;
           budgetExpenseItem.amount =
             req.body.amount || budgetExpenseItem.amount;
+          budgetExpenseItem.category =
+            req.body.category || budgetExpenseItem.category;
           // Save budget
           await budget.save();
           res.json(budgetExpenseItem);
@@ -217,7 +239,7 @@ module.exports = {
       res.status(400).json({ message: "Invalid URL Parameters." });
     }
   },
-  deleteBudgeItem: async function (req, res) {
+  deleteBudgetItem: async function (req, res) {
     // Get the budget item type from req.params
     const type = req.params.itemtype;
     // Initialize income & expense item variables

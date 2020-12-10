@@ -6,9 +6,15 @@ import {
   CREATE_USER_BUDGET_REQUEST,
   CREATE_USER_BUDGET_SUCCESS,
   CREATE_USER_BUDGET_FAIL,
+  CREATE_USER_BUDGET_RESET,
+  CREATE_USER_CATEGORY_REQUEST,
+  CREATE_USER_CATEGORY_SUCCESS,
+  CREATE_USER_CATEGORY_FAIL,
+  CREATE_USER_CATEGORY_RESET,
   ADD_ITEMS_USER_BUDGET_REQUEST,
   ADD_ITEMS_USER_BUDGET_SUCCESS,
   ADD_ITEMS_USER_BUDGET_FAIL,
+  ADD_ITEMS_USER_BUDGET_RESET,
   GET_ITEM_USER_BUDGET_REQUEST,
   GET_ITEM_USER_BUDGET_SUCCESS,
   GET_ITEM_USER_BUDGET_FAIL,
@@ -25,7 +31,6 @@ import {
 
 export const userBudgetReducer = (state = {}, action) => {
   switch (action.type) {
-    // Get User Budget Actions
     case GET_USER_BUDGET_REQUEST:
       return {
         loading: true,
@@ -42,7 +47,13 @@ export const userBudgetReducer = (state = {}, action) => {
       };
     case GET_USER_BUDGET_RESET:
       return {};
-    // Create User Budget Actions
+    default:
+      return state;
+  }
+};
+
+export const userBudgetCreateReducer = (state = {}, action) => {
+  switch (action.type) {
     case CREATE_USER_BUDGET_REQUEST:
       return {
         loading: true,
@@ -57,21 +68,33 @@ export const userBudgetReducer = (state = {}, action) => {
         loading: false,
         error: action.payload,
       };
-    // Add Items User Budget Actions
-    case ADD_ITEMS_USER_BUDGET_REQUEST:
+    case CREATE_USER_BUDGET_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
+
+export const userCategoryCreateReducer = (state = {}, action) => {
+  switch (action.type) {
+    case CREATE_USER_CATEGORY_REQUEST:
       return {
         loading: true,
       };
-    case ADD_ITEMS_USER_BUDGET_SUCCESS:
+    case CREATE_USER_CATEGORY_SUCCESS:
       return {
         loading: false,
-        budget: action.payload,
+        categories: action.payload,
+        success: true,
       };
-    case ADD_ITEMS_USER_BUDGET_FAIL:
+    case CREATE_USER_CATEGORY_FAIL:
       return {
         loading: false,
         error: action.payload,
       };
+    case CREATE_USER_CATEGORY_RESET:
+      return {};
+
     default:
       return state;
   }
@@ -94,6 +117,30 @@ export const userGetBudgetItemReducer = (state = {}, action) => {
         error: action.payload,
       };
     case GET_ITEM_USER_BUDGET_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
+
+export const userAddBudgetItemReducer = (state = {}, action) => {
+  switch (action.type) {
+    case ADD_ITEMS_USER_BUDGET_REQUEST:
+      return {
+        loading: true,
+      };
+    case ADD_ITEMS_USER_BUDGET_SUCCESS:
+      return {
+        loading: false,
+        budget: action.payload,
+        success: true,
+      };
+    case ADD_ITEMS_USER_BUDGET_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+    case ADD_ITEMS_USER_BUDGET_RESET:
       return {};
     default:
       return state;
