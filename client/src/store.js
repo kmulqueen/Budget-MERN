@@ -13,6 +13,8 @@ import {
   userCategoryCreateReducer,
 } from "./reducers/budgetReducer";
 
+import { addTransactionReducer } from "./reducers/transactionReducer";
+
 const reducer = combineReducers({
   userRegister: userRegisterReducer,
   userLogin: userLoginReducer,
@@ -23,6 +25,7 @@ const reducer = combineReducers({
   userUpdateBudgetItem: userUpdateBudgetItemReducer,
   userDeleteBudgetItem: userDeleteBudgetItemReducer,
   userCategoryCreate: userCategoryCreateReducer,
+  addTransaction: addTransactionReducer,
 });
 
 const middleware = [thunk];

@@ -13,7 +13,7 @@ const transactionSchema = mongoose.Schema(
     category: {
       type: String,
     },
-    date: { type: Date },
+    date: { type: Date, default: Date.now().toLocaleString() },
   },
   { timestamps: true }
 );

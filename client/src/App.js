@@ -8,6 +8,7 @@ import BudgetViewPage from "./pages/BudgetViewPage";
 import EditBudgetPage from "./pages/EditBudgetPage";
 import EditBudgetItemPage from "./pages/EditBudgetItemPage";
 import AddCategoryPage from "./pages/AddCategoryPage";
+import CreateTransactionPage from "./pages/CreateTransactionPage";
 
 function App() {
   return (
@@ -24,6 +25,11 @@ function App() {
             path="/budget/edit-item/:itemtype/:budgetid/:itemid"
             exact
             component={EditBudgetItemPage}
+          />
+          <Route
+            path="/transactions/new"
+            exact
+            component={CreateTransactionPage}
           />
           <Route path="/" exact component={HomePage} />
         </Container>
