@@ -3,6 +3,9 @@ const { protect } = require("../../middleware/authMiddleware");
 const transactionController = require("../../controllers/transactionController");
 
 // Matches with "/api/transaction"
-router.route("/").post(protect, transactionController.createTransaction);
+router
+  .route("/")
+  .post(protect, transactionController.createTransaction)
+  .get(protect, transactionController.getUserTransactions);
 
 module.exports = router;
