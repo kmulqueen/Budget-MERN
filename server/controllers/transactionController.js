@@ -3,7 +3,7 @@ const Transaction = require("../models/").Transaction;
 module.exports = {
   createTransaction: async function (req, res) {
     try {
-      const { transactionType, description, amount, category, date } = req.body;
+      const { transactionType, description, amount, category } = req.body;
 
       const newTransaction = new Transaction({
         user: req.user._id,
@@ -11,7 +11,6 @@ module.exports = {
         description,
         amount,
         category,
-        date,
       });
 
       await newTransaction.save();
@@ -33,6 +32,15 @@ module.exports = {
       }
     } catch (error) {
       res.status(422).json(error);
+    }
+  },
+  getTransactionByID: async function (req, res) {
+    const transaction = await Transaction.findById(req.params.id);
+
+    if (!transaction) {
+      res.status(404).json({ message: "Transaction doesn't exist." });
+    } else {
+      res.json(transaction);
     }
   },
 };
