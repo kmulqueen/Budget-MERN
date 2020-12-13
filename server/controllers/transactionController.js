@@ -43,4 +43,22 @@ module.exports = {
       res.json(transaction);
     }
   },
+  updateTransaction: async function (req, res) {
+    const { description, amount, category, transactionType } = req.body;
+
+    const transaction = await Transaction.findById(req.params.id);
+
+    if (!transaction) {
+      res.status(404).json({ message: "Transaction doesn't exist." });
+    } else {
+      transaction.description = description || transaction.description;
+      transaction.amount = amount || transaction.amount;
+      transaction.category = category || transaction.category;
+      transaction.transactionType =
+        transactionType || transaction.transactionType;
+
+      await transaction.save();
+      res.json(transaction);
+    }
+  },
 };

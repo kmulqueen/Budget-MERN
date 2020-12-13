@@ -16,6 +16,8 @@ import {
 import {
   addTransactionReducer,
   getUserTransactionsReducer,
+  getTransactionItemReducer,
+  updateTransactionItemReducer,
 } from "./reducers/transactionReducer";
 
 const reducer = combineReducers({
@@ -30,6 +32,8 @@ const reducer = combineReducers({
   userCategoryCreate: userCategoryCreateReducer,
   addTransaction: addTransactionReducer,
   getUserTransactions: getUserTransactionsReducer,
+  getTransactionItem: getTransactionItemReducer,
+  updateTransactionItem: updateTransactionItemReducer,
 });
 
 const middleware = [thunk];

@@ -3,7 +3,10 @@ const { protect } = require("../../middleware/authMiddleware");
 const transactionController = require("../../controllers/transactionController");
 
 // Matches with "/api/transaction/:id"
-router.route("/:id").get(protect, transactionController.getTransactionByID);
+router
+  .route("/:id")
+  .get(protect, transactionController.getTransactionByID)
+  .put(protect, transactionController.updateTransaction);
 
 // Matches with "/api/transaction"
 router
