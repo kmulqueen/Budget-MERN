@@ -6,7 +6,8 @@ const transactionController = require("../../controllers/transactionController")
 router
   .route("/:id")
   .get(protect, transactionController.getTransactionByID)
-  .put(protect, transactionController.updateTransaction);
+  .put(protect, transactionController.updateTransaction)
+  .delete(protect, transactionController.deleteTransaction);
 
 // Matches with "/api/transaction"
 router

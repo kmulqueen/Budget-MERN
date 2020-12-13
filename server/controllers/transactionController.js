@@ -61,4 +61,17 @@ module.exports = {
       res.json(transaction);
     }
   },
+  deleteTransaction: async function (req, res) {
+    try {
+      const transaction = await Transaction.findById(req.params.id);
+      if (!transaction) {
+        res.status(404).json({ message: "Transaction doesn't exist." });
+      } else {
+        await transaction.remove();
+        res.json({ message: "Transaction deleted successfully." });
+      }
+    } catch (error) {
+      res.status(422).json(error);
+    }
+  },
 };
