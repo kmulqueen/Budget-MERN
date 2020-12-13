@@ -15,6 +15,10 @@ import {
   UPDATE_TRANSACTION_ITEM_SUCCESS,
   UPDATE_TRANSACTION_ITEM_FAIL,
   UPDATE_TRANSACTION_ITEM_RESET,
+  DELETE_TRANSACTION_ITEM_REQUEST,
+  DELETE_TRANSACTION_ITEM_SUCCESS,
+  DELETE_TRANSACTION_ITEM_FAIL,
+  DELETE_TRANSACTION_ITEM_RESET,
 } from "../actionTypes/transactionTypes";
 
 export const addTransactionReducer = (state = {}, action) => {
@@ -109,6 +113,30 @@ export const updateTransactionItemReducer = (state = {}, action) => {
         error: action.payload,
       };
     case UPDATE_TRANSACTION_ITEM_RESET:
+      return {};
+
+    default:
+      return state;
+  }
+};
+
+export const deleteTransactionItemReducer = (state = {}, action) => {
+  switch (action.type) {
+    case DELETE_TRANSACTION_ITEM_REQUEST:
+      return {
+        loading: true,
+      };
+    case DELETE_TRANSACTION_ITEM_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+      };
+    case DELETE_TRANSACTION_ITEM_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+    case DELETE_TRANSACTION_ITEM_RESET:
       return {};
 
     default:

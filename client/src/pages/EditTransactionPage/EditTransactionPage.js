@@ -8,6 +8,8 @@ import {
   updateTransaction,
   updateTransactionReset,
   getUsersTransactionsReset,
+  deleteTransaction,
+  deleteTransactionReset,
 } from "../../actions/transactionActions";
 
 const EditTransactionPage = ({ history, match }) => {
@@ -30,6 +32,10 @@ const EditTransactionPage = ({ history, match }) => {
     (state) => state.updateTransactionItem
   );
   const { success: successUpdate } = updateTransactionItem;
+  const deleteTransactionItem = useSelector(
+    (state) => state.deleteTransactionItem
+  );
+  const { success: successDelete } = deleteTransactionItem;
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -45,7 +51,7 @@ const EditTransactionPage = ({ history, match }) => {
   };
 
   const deleteHandler = () => {
-    console.log("delete transaction");
+    dispatch(deleteTransaction(transactionID));
   };
 
   useEffect(() => {
@@ -59,6 +65,11 @@ const EditTransactionPage = ({ history, match }) => {
     if (successUpdate) {
       dispatch(getTransactionReset());
       dispatch(updateTransactionReset());
+      dispatch(getUsersTransactionsReset());
+      history.push("/transactions/all");
+    } else if (successDelete) {
+      dispatch(deleteTransactionReset());
+      dispatch(getTransactionReset());
       dispatch(getUsersTransactionsReset());
       history.push("/transactions/all");
     } else {
@@ -79,6 +90,7 @@ const EditTransactionPage = ({ history, match }) => {
     transaction,
     transactionID,
     successUpdate,
+    successDelete,
   ]);
   return (
     <Container>

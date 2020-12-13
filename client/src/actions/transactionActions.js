@@ -16,6 +16,10 @@ import {
   UPDATE_TRANSACTION_ITEM_SUCCESS,
   UPDATE_TRANSACTION_ITEM_FAIL,
   UPDATE_TRANSACTION_ITEM_RESET,
+  DELETE_TRANSACTION_ITEM_REQUEST,
+  DELETE_TRANSACTION_ITEM_SUCCESS,
+  DELETE_TRANSACTION_ITEM_FAIL,
+  DELETE_TRANSACTION_ITEM_RESET,
 } from "../actionTypes/transactionTypes";
 
 export const createTransaction = (transaction) => async (
@@ -167,4 +171,36 @@ export const updateTransaction = (transaction) => async (
 
 export const updateTransactionReset = () => (dispatch) => {
   dispatch({ type: UPDATE_TRANSACTION_ITEM_RESET });
+};
+
+export const deleteTransaction = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: DELETE_TRANSACTION_ITEM_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    await axios.delete(`/api/transaction/${id}`, config);
+
+    dispatch({ type: DELETE_TRANSACTION_ITEM_SUCCESS });
+  } catch (error) {
+    dispatch({
+      type: DELETE_TRANSACTION_ITEM_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const deleteTransactionReset = () => (dispatch) => {
+  dispatch({ type: DELETE_TRANSACTION_ITEM_RESET });
 };
