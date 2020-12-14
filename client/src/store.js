@@ -40,7 +40,14 @@ const reducer = combineReducers({
 
 const middleware = [thunk];
 
-const initialState = {};
+// Retrieve any existing user info from local storage (if exists)
+const userInfoFromStorage = localStorage.getItem("budgetPalUserInfo")
+  ? JSON.parse(localStorage.getItem("budgetPalUserInfo"))
+  : null;
+
+const initialState = {
+  userLogin: { userInfo: userInfoFromStorage },
+};
 
 const store = createStore(
   reducer,

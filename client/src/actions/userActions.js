@@ -34,6 +34,8 @@ export const registerUser = (name, email, password) => async (dispatch) => {
       type: USER_LOGIN_SUCCESS,
       payload: res.data,
     });
+
+    localStorage.setItem("budgetPalUserInfo", JSON.stringify(res.data));
   } catch (error) {
     dispatch({
       type: USER_REGISTER_FAIL,
@@ -65,6 +67,8 @@ export const loginUser = (email, password) => async (dispatch) => {
       type: USER_LOGIN_SUCCESS,
       payload: res.data,
     });
+
+    localStorage.setItem("budgetPalUserInfo", JSON.stringify(res.data));
   } catch (error) {
     dispatch({
       type: USER_LOGIN_FAIL,
@@ -77,6 +81,7 @@ export const loginUser = (email, password) => async (dispatch) => {
 };
 
 export const logout = () => (dispatch) => {
+  localStorage.removeItem("budgetPalUserInfo");
   dispatch({ type: USER_LOGOUT });
   document.location.href = "/login";
 };
