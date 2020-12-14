@@ -20,37 +20,40 @@ const NavBar = () => {
         <Navbar.Brand>Budget Pal</Navbar.Brand>
       </LinkContainer>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
-      <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="ml-auto">
-          <NavDropdown title="Budget" className="basic-nav-dropdown">
-            <LinkContainer to="/budget/view">
-              <NavDropdown.Item>View Budget</NavDropdown.Item>
-            </LinkContainer>
-            <LinkContainer to="/budget/update">
-              <NavDropdown.Item>Update Budget</NavDropdown.Item>
-            </LinkContainer>
-          </NavDropdown>
-          <NavDropdown title="Transactions" className="basic-nav-dropdown">
-            <LinkContainer to="/transactions/new">
-              <NavDropdown.Item>New Transaction</NavDropdown.Item>
-            </LinkContainer>
-            <LinkContainer to="/transactions/all">
-              <NavDropdown.Item>View Transactions</NavDropdown.Item>
-            </LinkContainer>
-          </NavDropdown>
-          {userInfo ? (
+      {userInfo ? (
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="ml-auto">
+            <NavDropdown title="Budget" className="basic-nav-dropdown">
+              <LinkContainer to="/budget/view">
+                <NavDropdown.Item>View Budget</NavDropdown.Item>
+              </LinkContainer>
+              <LinkContainer to="/budget/update">
+                <NavDropdown.Item>Update Budget</NavDropdown.Item>
+              </LinkContainer>
+            </NavDropdown>
+            <NavDropdown title="Transactions" className="basic-nav-dropdown">
+              <LinkContainer to="/transactions/new">
+                <NavDropdown.Item>New Transaction</NavDropdown.Item>
+              </LinkContainer>
+              <LinkContainer to="/transactions/all">
+                <NavDropdown.Item>View Transactions</NavDropdown.Item>
+              </LinkContainer>
+            </NavDropdown>
+
             <LinkContainer to="/">
               <Nav.Link className="ml-auto" onClick={logoutHandler}>
                 Logout
               </Nav.Link>
             </LinkContainer>
-          ) : (
-            <LinkContainer to="/login">
-              <Nav.Link className="ml-auto">Login</Nav.Link>
-            </LinkContainer>
-          )}
-        </Nav>
-      </Navbar.Collapse>
+          </Nav>
+        </Navbar.Collapse>
+      ) : (
+        <LinkContainer to="/login">
+          <Nav className="ml-auto">
+            <Nav.Link className="ml-auto">Login</Nav.Link>
+          </Nav>
+        </LinkContainer>
+      )}
     </Navbar>
   );
 };

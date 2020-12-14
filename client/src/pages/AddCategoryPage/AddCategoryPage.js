@@ -6,6 +6,8 @@ import { createUserCategory } from "../../actions/budgetActions";
 
 const AddCategoryPage = ({ history }) => {
   const dispatch = useDispatch();
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
   const userCategoryCreate = useSelector((state) => state.userCategoryCreate);
   const { success } = userCategoryCreate;
   const userBudget = useSelector((state) => state.userBudget);
@@ -58,6 +60,9 @@ const AddCategoryPage = ({ history }) => {
   };
 
   useEffect(() => {
+    if (!userInfo) {
+      history.push("/login");
+    }
     if (success) {
       if (!budget.monthlyIncome.length) {
         history.push("/budget/update");
@@ -65,7 +70,7 @@ const AddCategoryPage = ({ history }) => {
         history.push("/");
       }
     }
-  }, [success, budget, history]);
+  }, [success, budget, history, userInfo]);
 
   return (
     <Container>

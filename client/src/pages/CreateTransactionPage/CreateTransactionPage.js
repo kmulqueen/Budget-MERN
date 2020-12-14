@@ -48,14 +48,14 @@ const CreateTransactionPage = ({ history }) => {
   };
 
   useEffect(() => {
-    if (!userLogin || !userInfo) {
+    if (!userInfo) {
       history.push("/login");
     } else {
       if (success) {
         history.push("/");
       }
     }
-  }, [history, userLogin, userInfo, success]);
+  }, [history, userInfo, success]);
   return (
     <Container>
       <h1>Add Transaction</h1>
@@ -96,18 +96,22 @@ const CreateTransactionPage = ({ history }) => {
         </Form.Group>
         <Form.Group controlId="transactionCategorySelect">
           <Form.Label>Category</Form.Label>
-          <Form.Control
-            as="select"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          >
-            <option></option>
-            {budget.categories.map((item) => (
-              <option key={item._id} value={item.name}>
-                {item.name}
-              </option>
-            ))}
-          </Form.Control>
+          {budget && budget.categories ? (
+            <Form.Control
+              as="select"
+              value={category.name}
+              onChange={(e) => setCategory(e.target.value)}
+            >
+              <option></option>
+              {budget.categories.map((category) => (
+                <option key={category._id} value={category.name}>
+                  {category.name}
+                </option>
+              ))}
+            </Form.Control>
+          ) : (
+            <Form.Text>You don't have any categories created.</Form.Text>
+          )}
         </Form.Group>
         <Button variant="success" type="submit">
           Add Transaction
