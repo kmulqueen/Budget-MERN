@@ -1,12 +1,12 @@
 import React from "react";
-import { Table, Row, Col } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 const Budget = ({ userBudget }) => {
   return (
     <>
       <h3>Monthly Income</h3>
-      <Table striped bordered hover className="my-3">
+      <Table striped bordered hover className="mb-5">
         <thead>
           <tr>
             <th>Description</th>
@@ -33,7 +33,7 @@ const Budget = ({ userBudget }) => {
         </tbody>
       </Table>
       <h3>Monthly Expenses</h3>
-      <Table striped bordered hover className="my-3">
+      <Table striped bordered hover className="mb-5">
         <thead>
           <tr>
             <th>Description</th>
@@ -59,10 +59,21 @@ const Budget = ({ userBudget }) => {
           ))}
         </tbody>
       </Table>
-      <Row>
-        <Col>Discretionary Funds: ${userBudget.discretionaryFund}</Col>
-        <Col>Emergency Fund: ${userBudget.emergencyFund}</Col>
-      </Row>
+      <h3>Funds</h3>
+      <Table striped bordered hover className="mb-5">
+        <thead>
+          <tr>
+            <th>Discretionary Funds</th>
+            <th>Emergency Fund</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>${userBudget.discretionaryFund}</td>
+            <td>${userBudget.emergencyFund}</td>
+          </tr>
+        </tbody>
+      </Table>
     </>
   );
 };

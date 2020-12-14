@@ -37,7 +37,7 @@ const HomePage = ({ history }) => {
         <Link to="/login">Please Login</Link>
       ) : (
         <>
-          <h1>Hello, {userInfo.name}</h1>
+          <h1 className="mb-5">Hello, {userInfo.name}</h1>
           {!budget ? (
             <>
               <p>You haven't created a budget.</p>
