@@ -21,12 +21,126 @@ module.exports = {
   },
   getUserTransactions: async function (req, res) {
     try {
-      const transactions = await Transaction.find({ user: req.user._id });
+      // Get filters from req.body
+      const { month, year, category, transactionType } = req.body;
 
+      let monthParsed, yearParsed, transactions;
+
+      // Format year
+      if (year) {
+        yearParsed = year;
+      } else {
+        yearParsed = new Date().getFullYear();
+      }
+
+      // Format month
+      if (month) {
+        switch (month.toLowerCase()) {
+          case "january":
+            monthParsed = 1;
+            break;
+          case "february":
+            monthParsed = 2;
+            break;
+          case "march":
+            monthParsed = 3;
+            break;
+          case "april":
+            monthParsed = 4;
+            break;
+          case "may":
+            monthParsed = 5;
+            break;
+          case "june":
+            monthParsed = 6;
+            break;
+          case "july":
+            monthParsed = 7;
+            break;
+          case "august":
+            monthParsed = 8;
+            break;
+          case "september":
+            monthParsed = 9;
+            break;
+          case "october":
+            monthParsed = 10;
+            break;
+          case "november":
+            monthParsed = 11;
+            break;
+          case "december":
+            monthParsed = 12;
+            break;
+
+          default:
+            monthParsed = null;
+            break;
+        }
+      }
+
+      // Query DB based on req.body
+      if (month && category && transactionType) {
+        transactions = await Transaction.find({
+          user: req.user._id,
+          date: {
+            $gte: `${yearParsed}-${monthParsed}-01`,
+            $lte: `${yearParsed}-${monthParsed}-31`,
+          },
+          category: category,
+          transactionType: transactionType,
+        });
+      } else if (!month && category && transactionType) {
+        transactions = await Transaction.find({
+          user: req.user._id,
+          category: category,
+          transactionType: transactionType,
+        });
+      } else if (month && !category && transactionType) {
+        transactions = await Transaction.find({
+          user: req.user._id,
+          date: {
+            $gte: `${yearParsed}-${monthParsed}-01`,
+            $lte: `${yearParsed}-${monthParsed}-31`,
+          },
+          transactionType: transactionType,
+        });
+      } else if (month && category && !transactionType) {
+        transactions = await Transaction.find({
+          user: req.user._id,
+          date: {
+            $gte: `${yearParsed}-${monthParsed}-01`,
+            $lte: `${yearParsed}-${monthParsed}-31`,
+          },
+          category: category,
+        });
+      } else if (month && !category && !transactionType) {
+        transactions = await Transaction.find({
+          user: req.user._id,
+          date: {
+            $gte: `${yearParsed}-${monthParsed}-01`,
+            $lte: `${yearParsed}-${monthParsed}-31`,
+          },
+        });
+      } else if (!month && category && !transactionType) {
+        transactions = await Transaction.find({
+          user: req.user._id,
+          category: category,
+        });
+      } else if (!month && !category && transactionType) {
+        transactions = await Transaction.find({
+          user: req.user._id,
+          transactionType: transactionType,
+        });
+      } else if (!month && !year && !category) {
+        transactions = await Transaction.find({ user: req.user._id });
+      }
+
+      // Check for DB results
       if (!transactions.length) {
         res
           .status(404)
-          .json({ message: "No transactions found for this user." });
+          .json({ message: "No transactions found that match the criteria." });
       } else {
         res.json(transactions);
       }
@@ -69,6 +183,104 @@ module.exports = {
       } else {
         await transaction.remove();
         res.json({ message: "Transaction deleted successfully." });
+      }
+    } catch (error) {
+      res.status(422).json(error);
+    }
+  },
+  filterTransaction: async function (req, res) {
+    try {
+      const { month, year, category } = req.body;
+
+      let monthParsed, yearParsed, transactions;
+
+      // Format year
+      if (year) {
+        yearParsed = year;
+      } else {
+        yearParsed = new Date().getFullYear();
+      }
+
+      // Format month
+      if (month) {
+        switch (month.toLowerCase()) {
+          case "january":
+            monthParsed = 1;
+            break;
+          case "february":
+            monthParsed = 2;
+            break;
+          case "march":
+            monthParsed = 3;
+            break;
+          case "april":
+            monthParsed = 4;
+            break;
+          case "may":
+            monthParsed = 5;
+            break;
+          case "june":
+            monthParsed = 6;
+            break;
+          case "july":
+            monthParsed = 7;
+            break;
+          case "august":
+            monthParsed = 8;
+            break;
+          case "september":
+            monthParsed = 9;
+            break;
+          case "october":
+            monthParsed = 10;
+            break;
+          case "november":
+            monthParsed = 11;
+            break;
+          case "december":
+            monthParsed = 12;
+            break;
+
+          default:
+            monthParsed = null;
+            break;
+        }
+      }
+
+      // Query DB based on req.body
+      if (month && category) {
+        transactions = await Transaction.find({
+          user: req.user._id,
+          date: {
+            $gte: `${yearParsed}-${monthParsed}-01`,
+            $lte: `${yearParsed}-${monthParsed}-31`,
+          },
+          category: category,
+        });
+      } else if (!month && category) {
+        transactions = await Transaction.find({
+          user: req.user._id,
+          category: category,
+        });
+      } else if (month && !category) {
+        transactions = await Transaction.find({
+          user: req.user._id,
+          date: {
+            $gte: `${yearParsed}-${monthParsed}-01`,
+            $lte: `${yearParsed}-${monthParsed}-31`,
+          },
+        });
+      } else if (!month && !year && !category) {
+        transactions = await Transaction.find({ user: req.user._id });
+      }
+
+      // Check for DB results
+      if (!transactions.length) {
+        res
+          .status(404)
+          .json({ message: "No transactions found that match the criteria." });
+      } else {
+        res.json(transactions);
       }
     } catch (error) {
       res.status(422).json(error);
