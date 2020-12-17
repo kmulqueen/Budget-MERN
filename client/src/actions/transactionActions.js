@@ -40,7 +40,11 @@ export const createTransaction = (transaction) => async (
       },
     };
 
-    const res = await axios.post("/api/transaction", transaction, config);
+    const res = await axios.post(
+      "/api/transaction/create",
+      transaction,
+      config
+    );
 
     dispatch({
       type: ADD_NEW_TRANSACTION_SUCCESS,
@@ -60,7 +64,12 @@ export const createTransaction = (transaction) => async (
   }
 };
 
-export const getUsersTransactions = () => async (dispatch, getState) => {
+export const getUsersTransactions = ({
+  month,
+  year,
+  category,
+  transactionType,
+}) => async (dispatch, getState) => {
   try {
     dispatch({ type: GET_USER_TRANSACTIONS_REQUEST });
 
@@ -70,11 +79,16 @@ export const getUsersTransactions = () => async (dispatch, getState) => {
 
     const config = {
       headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${userInfo.token}`,
       },
     };
 
-    const res = await axios.get("/api/transaction", config);
+    const res = await axios.post(
+      "/api/transaction",
+      { month, year, category, transactionType },
+      config
+    );
 
     dispatch({
       type: GET_USER_TRANSACTIONS_SUCCESS,
