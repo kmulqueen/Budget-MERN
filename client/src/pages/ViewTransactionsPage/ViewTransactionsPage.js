@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Container, Table, Button, Row, Col, Form } from "react-bootstrap";
+import { Container, Table, Button, Col, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Moment from "react-moment";
 import Message from "../../components/Message";
@@ -30,36 +30,55 @@ const ViewTransactionsPage = ({ history }) => {
   const handleFilterSubmit = (e) => {
     e.preventDefault();
 
-    // setFilter((prevState) => ({
-    //   ...prevState,
-    //   month,
-    //   year,
-    //   category,
-    //   transactionType,
-    // }));
+    setFilter((prevState) => ({
+      ...prevState,
+      month,
+      year,
+      category,
+      transactionType,
+    }));
+  };
 
-    // const filter = {
-    //   month,
-    //   year,
-    //   category,
-    //   transactionType,
-    // };
+  const handleFilterClear = () => {
+    setMonth("");
+    setYear("");
+    setCategory("");
+    setTransactionType("");
 
-    // dispatch(getUsersTransactions(filter));
+    setFilter({
+      month,
+      year,
+      category,
+      transactionType,
+    });
+
+    dispatch(getUsersTransactions({}));
+  };
+
+  const handleErrorRefresh = () => {
+    dispatch(getUsersTransactions({}));
   };
 
   useEffect(() => {
     if (!userInfo) {
       history.push("/login");
     }
-    if (!transactions) {
+
+    if (filter === {}) {
       dispatch(getUsersTransactions({}));
+    } else {
+      dispatch(getUsersTransactions(filter));
     }
-  }, [history, userInfo, transactions, dispatch]);
+  }, [history, userInfo, filter, dispatch]);
   return (
     <Container>
       <h1>Transactions</h1>
-      {error && <Message variant="danger">{error}</Message>}
+      {error && (
+        <>
+          <Message variant="danger">{error}</Message>
+          <Button onClick={handleErrorRefresh}>Reload Transactions</Button>
+        </>
+      )}
       {transactions ? (
         <>
           {!filterShow ? (
@@ -140,8 +159,16 @@ const ViewTransactionsPage = ({ history }) => {
                     </Form.Control>
                   </Form.Group>
                 </Form.Row>
-                <Button className="mb-3" type="submit">
+                <Button className="mb-3 mr-3" type="submit" variant="success">
                   Apply Filter
+                </Button>
+                <Button
+                  className="mb-3"
+                  type="button"
+                  onClick={handleFilterClear}
+                  variant="outline-secondary"
+                >
+                  Clear Filter
                 </Button>
               </Form>
             </>

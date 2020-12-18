@@ -140,12 +140,14 @@ module.exports = {
       if (!transactions.length) {
         res
           .status(404)
-          .json({ message: "No transactions found that match the criteria." });
+          .json({ message: "No transactions found that match the filter." });
       } else {
         res.json(transactions);
       }
     } catch (error) {
-      res.status(422).json(error);
+      res
+        .status(422)
+        .json({ message: "No transactions found that match the filter." });
     }
   },
   getTransactionByID: async function (req, res) {
