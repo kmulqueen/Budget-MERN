@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { LinkContainer } from "react-router-bootstrap";
 import { Button } from "react-bootstrap";
 import Budget from "../../components/Budget";
 import {
@@ -26,10 +25,8 @@ const HomePage = ({ history }) => {
   useEffect(() => {
     if (!userInfo) {
       history.push("/login");
-    } else {
-      dispatch(getUserBudget());
     }
-  }, [userInfo, history, dispatch]);
+  }, [userInfo, history, dispatch, budget]);
 
   return (
     <>

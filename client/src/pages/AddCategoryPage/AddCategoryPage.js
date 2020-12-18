@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Container, Form, Button } from "react-bootstrap";
+import { Container, Form, Button, Badge } from "react-bootstrap";
 import Message from "../../components/Message";
-import { createUserCategory } from "../../actions/budgetActions";
+import { getUserBudget, createUserCategory } from "../../actions/budgetActions";
 
 const AddCategoryPage = ({ history }) => {
   const dispatch = useDispatch();
@@ -62,6 +62,8 @@ const AddCategoryPage = ({ history }) => {
   useEffect(() => {
     if (!userInfo) {
       history.push("/login");
+    } else if (!budget) {
+      dispatch(getUserBudget());
     }
     if (success) {
       if (!budget.monthlyIncome.length) {
@@ -70,12 +72,12 @@ const AddCategoryPage = ({ history }) => {
         history.push("/");
       }
     }
-  }, [success, budget, history, userInfo]);
+  }, [success, budget, history, userInfo, dispatch]);
 
   return (
     <Container>
-      <h1>Add New Categories</h1>
-      <Form onSubmit={handleSubmit}>
+      <h3>Add New Categories</h3>
+      <Form onSubmit={handleSubmit} className="mb-3">
         {categoryError && <Message variant="danger">{categoryError}</Message>}
         {categoryMessage && (
           <Message variant="success">{categoryMessage}</Message>
@@ -101,6 +103,16 @@ const AddCategoryPage = ({ history }) => {
           Save Categories
         </Button>
       </Form>
+      <h3>Existing Categories</h3>
+      {budget && budget.categories.length ? (
+        budget.categories.map((item) => (
+          <Badge variant="light" className="mr-2" key={item._id}>
+            {item.name}
+          </Badge>
+        ))
+      ) : (
+        <Form.Text>You haven't created any categories yet.</Form.Text>
+      )}
     </Container>
   );
 };

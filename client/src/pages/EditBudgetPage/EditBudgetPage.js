@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Form, Button, Container, InputGroup, Row, Col } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import Message from "../../components/Message";
-import { addNewBudgetItems } from "../../actions/budgetActions";
+import { getUserBudget, addNewBudgetItems } from "../../actions/budgetActions";
 
 const EditBudgetPage = ({ history }) => {
   const [monthlyIncomeDescription, setMonthlyIncomeDescription] = useState("");
@@ -30,6 +30,8 @@ const EditBudgetPage = ({ history }) => {
   const { userInfo } = userLogin;
   const userBudget = useSelector((state) => state.userBudget);
   const { budget } = userBudget;
+  const userAddBudgetItem = useSelector((state) => state.userAddBudgetItem);
+  const { success: successAdd } = userAddBudgetItem;
 
   const dispatch = useDispatch();
 
@@ -43,8 +45,6 @@ const EditBudgetPage = ({ history }) => {
       setMessage(null);
       // Update existing budget
       dispatch(addNewBudgetItems(incomeItems, expenseItems));
-      // Redirect to home page
-      history.push("/");
     } else {
       setMessage(
         "Please add at least 1 income or 1 expense item to update your budget."
@@ -140,7 +140,13 @@ const EditBudgetPage = ({ history }) => {
     if (!userInfo) {
       history.push("/login");
     }
-  }, [userInfo, history]);
+    if (successAdd) {
+      // Get updated budget
+      dispatch(getUserBudget());
+      // Redirect to home page
+      history.push("/");
+    }
+  }, [userInfo, history, dispatch, successAdd]);
 
   return (
     <Container>
@@ -148,7 +154,7 @@ const EditBudgetPage = ({ history }) => {
         <Button variant="outline-secondary">View Budget</Button>
       </LinkContainer>
       <Form onSubmit={submitHandler}>
-        <h1 className="my-4">Monthly Income</h1>
+        <h3 className="my-4">Monthly Income</h3>
         {incError && <Message variant="danger">{incError}</Message>}
         {incMessage && <Message variant="success">{incMessage}</Message>}
         <label htmlFor="monthlyIncomeDescription">Add Description</label>
@@ -200,7 +206,7 @@ const EditBudgetPage = ({ history }) => {
           Add Income Item
         </Button>
 
-        <h1 className="my-4">Monthly Expenses</h1>
+        <h3 className="my-4">Monthly Expenses</h3>
         {expError && <Message variant="danger">{expError}</Message>}
         {expMessage && <Message variant="success">{expMessage}</Message>}
         <label htmlFor="monthlyExpenseDescription">Add Description</label>

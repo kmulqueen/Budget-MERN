@@ -204,6 +204,22 @@ module.exports = {
           budgetIncomeItem.amount = req.body.amount || budgetIncomeItem.amount;
           budgetIncomeItem.category =
             req.body.category || budgetIncomeItem.category;
+          // Calculate new total monthly income
+          const totalMonthlyIncome = budget.monthlyIncome.reduce(
+            (acc, item) => acc + item.amount,
+            0
+          );
+          // Calculate new total monthly expenses
+          const totalMonthlyExpenses = budget.monthlyExpenses.reduce(
+            (acc, item) => acc + item.amount,
+            0
+          );
+          // Calculate new discretionary fund
+          const discretionaryFund = totalMonthlyIncome - totalMonthlyExpenses;
+          budget.discretionaryFund = discretionaryFund;
+          // Calculate new emergency fund
+          const emergencyFund = totalMonthlyExpenses * 6;
+          budget.emergencyFund = emergencyFund;
           // Save budget
           await budget.save();
           res.json(budgetIncomeItem);
@@ -229,6 +245,22 @@ module.exports = {
             req.body.amount || budgetExpenseItem.amount;
           budgetExpenseItem.category =
             req.body.category || budgetExpenseItem.category;
+          // Calculate new total monthly income
+          const totalMonthlyIncome = budget.monthlyIncome.reduce(
+            (acc, item) => acc + item.amount,
+            0
+          );
+          // Calculate new total monthly expenses
+          const totalMonthlyExpenses = budget.monthlyExpenses.reduce(
+            (acc, item) => acc + item.amount,
+            0
+          );
+          // Calculate new discretionary fund
+          const discretionaryFund = totalMonthlyIncome - totalMonthlyExpenses;
+          budget.discretionaryFund = discretionaryFund;
+          // Calculate new emergency fund
+          const emergencyFund = totalMonthlyExpenses * 6;
+          budget.emergencyFund = emergencyFund;
           // Save budget
           await budget.save();
           res.json(budgetExpenseItem);
@@ -260,6 +292,22 @@ module.exports = {
         } else {
           // Delete budget item
           budgetIncomeItem.remove();
+          // Calculate new total monthly income
+          const totalMonthlyIncome = budget.monthlyIncome.reduce(
+            (acc, item) => acc + item.amount,
+            0
+          );
+          // Calculate new total monthly expenses
+          const totalMonthlyExpenses = budget.monthlyExpenses.reduce(
+            (acc, item) => acc + item.amount,
+            0
+          );
+          // Calculate new discretionary fund
+          const discretionaryFund = totalMonthlyIncome - totalMonthlyExpenses;
+          budget.discretionaryFund = discretionaryFund;
+          // Calculate new emergency fund
+          const emergencyFund = totalMonthlyExpenses * 6;
+          budget.emergencyFund = emergencyFund;
           // Save budget
           await budget.save();
           res.json({ message: "Item successfully deleted." });
@@ -280,6 +328,22 @@ module.exports = {
         } else {
           // Delete budget item
           budgetExpenseItem.remove();
+          // Calculate new total monthly income
+          const totalMonthlyIncome = budget.monthlyIncome.reduce(
+            (acc, item) => acc + item.amount,
+            0
+          );
+          // Calculate new total monthly expenses
+          const totalMonthlyExpenses = budget.monthlyExpenses.reduce(
+            (acc, item) => acc + item.amount,
+            0
+          );
+          // Calculate new discretionary fund
+          const discretionaryFund = totalMonthlyIncome - totalMonthlyExpenses;
+          budget.discretionaryFund = discretionaryFund;
+          // Calculate new emergency fund
+          const emergencyFund = totalMonthlyExpenses * 6;
+          budget.emergencyFund = emergencyFund;
           // Save budget
           await budget.save();
           res.json({ message: "Item successfully deleted." });

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Container, Form, Button, Col, Row } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import {
+  getUserBudget,
   getUserBudgetItem,
   getBudgetItemReset,
   updateBudgetItem,
@@ -64,9 +65,11 @@ const EditBudgetItemPage = ({ history, match }) => {
     if (successUpdate) {
       dispatch(getBudgetItemReset());
       dispatch(updateBudgetItemReset());
+      dispatch(getUserBudget());
       history.push("/");
     } else if (successDelete) {
       dispatch(deleteBudgetItemReset());
+      dispatch(getUserBudget());
       history.push("/");
     } else {
       if (!budgetItem || budgetItem._id !== itemID) {
