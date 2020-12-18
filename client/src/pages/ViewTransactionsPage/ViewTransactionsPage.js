@@ -45,12 +45,7 @@ const ViewTransactionsPage = ({ history }) => {
     setCategory("");
     setTransactionType("");
 
-    setFilter({
-      month,
-      year,
-      category,
-      transactionType,
-    });
+    setFilter({});
 
     dispatch(getUsersTransactions({}));
   };
@@ -65,6 +60,7 @@ const ViewTransactionsPage = ({ history }) => {
     }
 
     if (filter === {}) {
+      console.log("filter is empty...");
       dispatch(getUsersTransactions({}));
     } else {
       dispatch(getUsersTransactions(filter));
