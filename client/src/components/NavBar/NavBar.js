@@ -30,6 +30,9 @@ const NavBar = () => {
               <LinkContainer to="/budget/update">
                 <NavDropdown.Item>Update Budget</NavDropdown.Item>
               </LinkContainer>
+              <LinkContainer to="/budget/categories">
+                <NavDropdown.Item>Add Budget Category</NavDropdown.Item>
+              </LinkContainer>
             </NavDropdown>
             <NavDropdown title="Transactions" className="basic-nav-dropdown">
               <LinkContainer to="/transactions/new">

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import Moment from "react-moment";
 import Message from "../../components/Message";
 import { getUsersTransactions } from "../../actions/transactionActions";
+import { getUserBudget } from "../../actions/budgetActions";
 
 const ViewTransactionsPage = ({ history }) => {
   const dispatch = useDispatch();
@@ -57,6 +58,8 @@ const ViewTransactionsPage = ({ history }) => {
   useEffect(() => {
     if (!userInfo) {
       history.push("/login");
+    } else if (!budget) {
+      dispatch(getUserBudget());
     }
 
     if (filter === {}) {

@@ -90,7 +90,11 @@ const AddCategoryPage = ({ history }) => {
             onChange={handleChange}
           />
         </Form.Group>
-        <Button variant="outline-info" onClick={handleAddCategory}>
+        <Button
+          variant="outline-info"
+          className="mr-3"
+          onClick={handleAddCategory}
+        >
           Add Category
         </Button>
         <Button type="submit" variant="success">
