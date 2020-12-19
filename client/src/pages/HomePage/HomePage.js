@@ -25,6 +25,8 @@ const HomePage = ({ history }) => {
   useEffect(() => {
     if (!userInfo) {
       history.push("/login");
+    } else if (!budget) {
+      dispatch(getUserBudget());
     }
   }, [userInfo, history, dispatch, budget]);
 

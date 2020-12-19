@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Container, Table, Button, Col, Form } from "react-bootstrap";
+import { Container, Table, Button, Col, Form, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Moment from "react-moment";
 import Message from "../../components/Message";
@@ -15,7 +15,7 @@ const ViewTransactionsPage = ({ history }) => {
   const userBudget = useSelector((state) => state.userBudget);
   const { budget } = userBudget;
   const getUserTransactions = useSelector((state) => state.getUserTransactions);
-  const { transactions, error } = getUserTransactions;
+  const { transactions, error, loading } = getUserTransactions;
 
   const [month, setMonth] = useState("");
   const [year, setYear] = useState("");
@@ -63,7 +63,6 @@ const ViewTransactionsPage = ({ history }) => {
     }
 
     if (filter === {}) {
-      console.log("filter is empty...");
       dispatch(getUsersTransactions({}));
     } else {
       dispatch(getUsersTransactions(filter));
@@ -78,7 +77,10 @@ const ViewTransactionsPage = ({ history }) => {
           <Button onClick={handleErrorRefresh}>Reload Transactions</Button>
         </>
       )}
-      {transactions ? (
+
+      {loading ? (
+        <Spinner animation="border" />
+      ) : transactions ? (
         <>
           {!filterShow ? (
             <Button className="mb-3" onClick={toggleFilterShow}>
@@ -203,8 +205,10 @@ const ViewTransactionsPage = ({ history }) => {
             </tbody>
           </Table>
         </>
-      ) : (
+      ) : !transactions && !error ? (
         <h3>You haven't logged any transactions yet.</h3>
+      ) : (
+        !transactions && error && null
       )}
     </Container>
   );
