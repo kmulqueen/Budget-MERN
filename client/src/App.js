@@ -12,6 +12,7 @@ import AddCategoryPage from "./pages/AddCategoryPage";
 import CreateTransactionPage from "./pages/CreateTransactionPage";
 import ViewTransactionsPage from "./pages/ViewTransactionsPage";
 import EditTransactionPage from "./pages/EditTransactionPage";
+import SpendAnalysisPage from "./pages/SpendAnalysisPage";
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
               exact
               component={EditTransactionPage}
             />
+            <Route path="/spend-analysis" exact component={SpendAnalysisPage} />
             <Route path="/" exact component={HomePage} />
             <Route component={NotFoundPage} />
           </Switch>

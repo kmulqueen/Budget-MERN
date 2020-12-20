@@ -43,6 +43,9 @@ const NavBar = () => {
               </LinkContainer>
             </NavDropdown>
 
+            <LinkContainer to="/spend-analysis">
+              <Nav.Link>Spend Analysis</Nav.Link>
+            </LinkContainer>
             <LinkContainer to="/">
               <Nav.Link className="ml-auto" onClick={logoutHandler}>
                 Logout
