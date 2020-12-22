@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Table, Form, Button, Col } from "react-bootstrap";
-import Moment from "react-moment";
+import { Table, Form, Button, Col, Spinner } from "react-bootstrap";
+import Message from "../../components/Message";
 import { getUserBudget } from "../../actions/budgetActions";
 import { getUsersTransactions } from "../../actions/transactionActions";
 
@@ -18,11 +18,28 @@ const SpendAnalysisPage = ({ history }) => {
   const currentMonth = new Intl.DateTimeFormat("en-US", {
     month: "long",
   }).format(currentDate);
-  const [month, setMonth] = useState(currentMonth);
-  const [year, setYear] = useState("");
 
-  const submitHandler = (e) => {
+  const [month, setMonth] = useState(currentMonth);
+  const [year, setYear] = useState(currentDate.getFullYear());
+  const [filter, setFilter] = useState({});
+
+  const filterSubmitHandler = (e) => {
     e.preventDefault();
+
+    setFilter((prevState) => ({
+      ...prevState,
+      month,
+      year,
+    }));
+  };
+
+  const handleFilterClear = () => {
+    setMonth(currentMonth);
+    setYear(currentDate.getFullYear());
+
+    setFilter({});
+
+    dispatch(getUsersTransactions({}));
   };
 
   useEffect(() => {
@@ -31,75 +48,174 @@ const SpendAnalysisPage = ({ history }) => {
     } else if (!budget) {
       dispatch(getUserBudget());
     }
-  }, [history, dispatch, userInfo, budget, month]);
+
+    if (filter === {}) {
+      dispatch(getUsersTransactions({}));
+    } else {
+      dispatch(getUsersTransactions(filter));
+    }
+  }, [history, dispatch, userInfo, budget, filter]);
   return (
     <>
       <h3>Spend Analysis</h3>
-      <Form onSubmit={submitHandler}>
-        <Form.Row>
-          <Form.Group as={Col}>
-            <Form.Label>Month</Form.Label>
-            <Form.Control
-              as="select"
-              value={month}
-              onChange={(e) => setMonth(e.target.value)}
-            >
-              <option>January</option>
-              <option>February</option>
-              <option>March</option>
-              <option>April</option>
-              <option>May</option>
-              <option>June</option>
-              <option>July</option>
-              <option>August</option>
-              <option>September</option>
-              <option>October</option>
-              <option>November</option>
-              <option>December</option>
-            </Form.Control>
-          </Form.Group>
+      {error && <Message variant="danger">{error}</Message>}
+      <Form onSubmit={filterSubmitHandler} className="my-3">
+        <Form.Row className="align-items-center">
+          <Col>
+            <Form.Group>
+              <Form.Label>Month</Form.Label>
+              <Form.Control
+                as="select"
+                value={month}
+                onChange={(e) => setMonth(e.target.value)}
+              >
+                <option>January</option>
+                <option>February</option>
+                <option>March</option>
+                <option>April</option>
+                <option>May</option>
+                <option>June</option>
+                <option>July</option>
+                <option>August</option>
+                <option>September</option>
+                <option>October</option>
+                <option>November</option>
+                <option>December</option>
+              </Form.Control>
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group>
+              <Form.Label>Year</Form.Label>
+              <Form.Control
+                type="number"
+                value={year}
+                onChange={(e) => setYear(e.target.value)}
+              />
+            </Form.Group>
+          </Col>
+          <Col>
+            <Button type="submit" variant="success">
+              Apply Filter
+            </Button>
+          </Col>
+          <Col>
+            <Button onClick={handleFilterClear} variant="outline-danger">
+              Reset Filter
+            </Button>
+          </Col>
         </Form.Row>
       </Form>
-      <Table>
-        <thead>
-          <tr>
-            <th>Category</th>
-            <th>Budget</th>
-            <th>Spent</th>
-            <th>Variance</th>
-          </tr>
-        </thead>
-        <tbody>
-          {budget.categories.map((category) => (
-            <tr key={category._id}>
-              <td>{category.name}</td>
-              <td>
-                {budget.monthlyExpenses.reduce(function (acc, expense) {
-                  if (
-                    category.name.toLowerCase() ===
-                    expense.category.name.toLowerCase()
-                  ) {
-                    acc = acc + expense.amount;
-                  }
-                  return acc;
-                }, 0)}
-              </td>
-              <td>
-                {transactions.reduce(function (acc, transaction) {
-                  if (
-                    category.name.toLowerCase() ===
-                      transaction.category.toLowerCase() &&
-                    transaction.transactionType.toLowerCase() === "expense"
-                  ) {
-                    acc = acc + transaction.amount;
-                  }
-                  return acc;
-                }, 0)}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+
+      {loading ? (
+        <Spinner animation="border" />
+      ) : transactions ? (
+        <>
+          <Table bordered striped hover>
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Budget</th>
+                <th>Spent</th>
+                <th>Variance</th>
+              </tr>
+            </thead>
+            <tbody>
+              {budget.categories.map((category) => (
+                <tr key={category._id}>
+                  <td>{category.name}</td>
+                  <td>
+                    ${" "}
+                    {budget.monthlyExpenses.reduce(function (acc, expense) {
+                      if (
+                        category.name.toLowerCase() ===
+                        expense.category.name.toLowerCase()
+                      ) {
+                        acc = acc + expense.amount;
+                      }
+                      return acc;
+                    }, 0)}
+                  </td>
+                  <td>
+                    ${" "}
+                    {transactions.reduce(function (acc, transaction) {
+                      if (
+                        category.name.toLowerCase() ===
+                          transaction.category.toLowerCase() &&
+                        transaction.transactionType.toLowerCase() === "expense"
+                      ) {
+                        acc = acc + transaction.amount;
+                      }
+                      return acc;
+                    }, 0)}
+                  </td>
+                  <td>
+                    ${" "}
+                    {budget.monthlyExpenses.reduce(function (acc, expense) {
+                      if (
+                        category.name.toLowerCase() ===
+                        expense.category.name.toLowerCase()
+                      ) {
+                        acc = acc + expense.amount;
+                      }
+                      return acc;
+                    }, 0) -
+                      transactions.reduce(function (acc, transaction) {
+                        if (
+                          category.name.toLowerCase() ===
+                            transaction.category.toLowerCase() &&
+                          transaction.transactionType.toLowerCase() ===
+                            "expense"
+                        ) {
+                          acc = acc + transaction.amount;
+                        }
+                        return acc;
+                      }, 0)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>Total Spent</th>
+                <th>Total Left</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  ${" "}
+                  {transactions.reduce(
+                    (acc, transaction) => acc + transaction.amount,
+                    0
+                  )}
+                </td>
+                <td>
+                  ${" "}
+                  {budget.monthlyExpenses.reduce(
+                    (acc, expense) => acc + expense.amount,
+                    0
+                  ) -
+                    transactions.reduce(
+                      (acc, transaction) => acc + transaction.amount,
+                      0
+                    )}
+                </td>
+              </tr>
+            </tbody>
+          </Table>
+        </>
+      ) : (
+        !transactions &&
+        !error &&
+        !loading && (
+          <Form.Text>
+            You haven't recorded any transactions that match the given filter.
+          </Form.Text>
+        )
+      )}
     </>
   );
 };
