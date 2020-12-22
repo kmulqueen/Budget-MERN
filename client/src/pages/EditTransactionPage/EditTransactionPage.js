@@ -113,6 +113,7 @@ const EditTransactionPage = ({ history, match }) => {
           <Form.Label>Amount</Form.Label>
           <Form.Control
             type="number"
+            step=".01"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
           />

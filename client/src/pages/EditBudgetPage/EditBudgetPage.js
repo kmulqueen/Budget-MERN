@@ -3,7 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { Form, Button, Container, InputGroup, Row, Col } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import Message from "../../components/Message";
-import { getUserBudget, addNewBudgetItems } from "../../actions/budgetActions";
+import {
+  getUserBudget,
+  addNewBudgetItems,
+  addNewBudgetItemsReset,
+} from "../../actions/budgetActions";
 
 const EditBudgetPage = ({ history }) => {
   const [monthlyIncomeDescription, setMonthlyIncomeDescription] = useState("");
@@ -143,6 +147,8 @@ const EditBudgetPage = ({ history }) => {
     if (successAdd) {
       // Get updated budget
       dispatch(getUserBudget());
+      // Reset update state
+      dispatch(addNewBudgetItemsReset());
       // Redirect to home page
       history.push("/");
     }
@@ -172,6 +178,7 @@ const EditBudgetPage = ({ history }) => {
           <Form.Control
             id="monthlyIncomeAmount"
             type="number"
+            step=".01"
             placeholder="Enter income amount"
             value={monthlyIncomeAmount}
             onChange={(e) => setMonthlyIncomeAmount(e.target.value)}
@@ -224,6 +231,7 @@ const EditBudgetPage = ({ history }) => {
           <Form.Control
             id="monthlyExpenseAmount"
             type="number"
+            step=".01"
             placeholder="Enter expense amount"
             value={monthlyExpenseAmount}
             onChange={(e) => setMonthlyExpenseAmount(e.target.value)}

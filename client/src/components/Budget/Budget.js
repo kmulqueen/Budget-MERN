@@ -19,7 +19,7 @@ const Budget = ({ userBudget }) => {
           {userBudget.monthlyIncome.map((item) => (
             <tr key={item._id}>
               <td>{item.description}</td>
-              <td>${item.amount}</td>
+              <td>${item.amount.toFixed(2)}</td>
               <td>{item.category.name}</td>
               <td>
                 <Link
@@ -46,7 +46,7 @@ const Budget = ({ userBudget }) => {
           {userBudget.monthlyExpenses.map((item) => (
             <tr key={item._id}>
               <td>{item.description}</td>
-              <td>${item.amount}</td>
+              <td>${item.amount.toFixed(2)}</td>
               <td>{item.category.name}</td>
               <td>
                 <Link
@@ -69,8 +69,8 @@ const Budget = ({ userBudget }) => {
         </thead>
         <tbody>
           <tr>
-            <td>${userBudget.discretionaryFund}</td>
-            <td>${userBudget.emergencyFund}</td>
+            <td>${userBudget.discretionaryFund.toFixed(2)}</td>
+            <td>${userBudget.emergencyFund.toFixed(2)}</td>
           </tr>
         </tbody>
       </Table>

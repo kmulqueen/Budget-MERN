@@ -111,7 +111,7 @@ const SpendAnalysisPage = ({ history }) => {
         <Spinner animation="border" />
       ) : transactions ? (
         <>
-          <Table bordered striped hover>
+          <Table bordered striped hover className="mb-5">
             <thead>
               <tr>
                 <th>Category</th>

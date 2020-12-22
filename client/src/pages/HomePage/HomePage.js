@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { Button } from "react-bootstrap";
+import { Button, Spinner } from "react-bootstrap";
 import Budget from "../../components/Budget";
+import Message from "../../components/Message";
 import {
   getUserBudget,
   createUserBudget,
@@ -14,7 +15,7 @@ const HomePage = ({ history }) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo, loading: loginLoading, error: loginError } = userLogin;
   const userBudget = useSelector((state) => state.userBudget);
-  const { budget, error: budgetError } = userBudget;
+  const { budget, error: budgetError, loading: budgetLoading } = userBudget;
 
   const createHandler = () => {
     dispatch(createUserBudget());
@@ -37,7 +38,10 @@ const HomePage = ({ history }) => {
       ) : (
         <>
           <h1 className="mb-5">Hello, {userInfo.name}</h1>
-          {!budget ? (
+          {budgetError && <Message variant="danger">{budgetError}</Message>}
+          {budgetLoading ? (
+            <Spinner animation="border" />
+          ) : !budget ? (
             <>
               <p>You haven't created a budget.</p>
               <Button onClick={createHandler}>Create Budget</Button>
