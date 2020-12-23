@@ -156,58 +156,6 @@ const SpendAnalysisPage = ({ history }) => {
               </tr>
             </thead>
             <tbody>
-              {/* {budget.categories.map((category) => (
-                <tr key={category._id} id={category._id}>
-                  <td>{category.name}</td>
-                  <td>
-                    ${" "}
-                    {budget.monthlyExpenses.reduce(function (acc, expense) {
-                      if (
-                        category.name.toLowerCase() ===
-                        expense.category.name.toLowerCase()
-                      ) {
-                        acc = acc + expense.amount;
-                      }
-                      return acc;
-                    }, 0)}
-                  </td>
-                  <td>
-                    ${" "}
-                    {transactions.reduce(function (acc, transaction) {
-                      if (
-                        category.name.toLowerCase() ===
-                          transaction.category.toLowerCase() &&
-                        transaction.transactionType.toLowerCase() === "expense"
-                      ) {
-                        acc = acc + transaction.amount;
-                      }
-                      return acc;
-                    }, 0)}
-                  </td>
-                  <td>
-                    {budget.monthlyExpenses.reduce(function (acc, expense) {
-                      if (
-                        category.name.toLowerCase() ===
-                        expense.category.name.toLowerCase()
-                      ) {
-                        acc = acc + expense.amount;
-                      }
-                      return acc;
-                    }, 0) -
-                      transactions.reduce(function (acc, transaction) {
-                        if (
-                          category.name.toLowerCase() ===
-                            transaction.category.toLowerCase() &&
-                          transaction.transactionType.toLowerCase() ===
-                            "expense"
-                        ) {
-                          acc = acc + transaction.amount;
-                        }
-                        return acc;
-                      }, 0)}
-                  </td>
-                </tr>
-              ))} */}
               {tableItems.map((item) =>
                 item.variance < 0 ? (
                   <tr key={item.id} className="table-danger">
