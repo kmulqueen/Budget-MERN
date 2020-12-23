@@ -53,6 +53,12 @@ const CreateTransactionPage = ({ history }) => {
       history.push("/login");
     } else if (!budget) {
       dispatch(getUserBudget());
+    } else if (
+      (budget && budget.monthlyIncome.length === 0) ||
+      (budget && budget.monthlyExpenses.length === 0) ||
+      (budget && budget.categories.length === 0)
+    ) {
+      history.push("/");
     }
 
     if (success) {

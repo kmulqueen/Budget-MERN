@@ -143,6 +143,8 @@ const EditBudgetPage = ({ history }) => {
     // If user isn't logged in, redirect to login page
     if (!userInfo) {
       history.push("/login");
+    } else if (budget && budget.categories.length === 0) {
+      history.push("/");
     }
     if (successAdd) {
       // Get updated budget

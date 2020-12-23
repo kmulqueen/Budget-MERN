@@ -11,6 +11,7 @@ import {
   deleteTransaction,
   deleteTransactionReset,
 } from "../../actions/transactionActions";
+import { getUserBudget } from "../../actions/budgetActions";
 
 const EditTransactionPage = ({ history, match }) => {
   const transactionID = match.params.id;
@@ -25,7 +26,7 @@ const EditTransactionPage = ({ history, match }) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
   const userBudget = useSelector((state) => state.userBudget);
-  const { budget } = userBudget;
+  const { budget, error: budgetError } = userBudget;
   const getTransactionItem = useSelector((state) => state.getTransactionItem);
   const { transaction } = getTransactionItem;
   const updateTransactionItem = useSelector(
@@ -55,11 +56,17 @@ const EditTransactionPage = ({ history, match }) => {
   };
 
   useEffect(() => {
+    // Push to login screen if no user info is found
     if (!userInfo) {
       history.push("/login");
     }
+    // Try to get user's budget if no budget is found in state
     if (!budget) {
-      history.push("/budget/update");
+      dispatch(getUserBudget());
+    }
+    // If no budget is found for user, push to home screen where user can create new budget
+    if (budgetError) {
+      history.push("/");
     }
 
     if (successUpdate) {
@@ -91,6 +98,7 @@ const EditTransactionPage = ({ history, match }) => {
     transactionID,
     successUpdate,
     successDelete,
+    budgetError,
   ]);
   return (
     <Container>
@@ -123,7 +131,7 @@ const EditTransactionPage = ({ history, match }) => {
           {budget && budget.categories ? (
             <Form.Control
               as="select"
-              value={category.name}
+              value={category}
               onChange={(e) => setCategory(e.target.value)}
             >
               {budget.categories.map((category) => (

@@ -55,6 +55,41 @@ const SpendAnalysisPage = ({ history }) => {
       dispatch(getUsersTransactions(filter));
     }
   }, [history, dispatch, userInfo, budget, filter]);
+
+  // Initialize table items to map through to create table
+  let tableItems;
+  if (budget && transactions) {
+    let totalExpenses, totalTransactions;
+    tableItems = budget.categories.map(
+      (category) => (
+        (totalExpenses = budget.monthlyExpenses.reduce(function (acc, expense) {
+          if (
+            category.name.toLowerCase() === expense.category.name.toLowerCase()
+          ) {
+            acc = acc + expense.amount;
+          }
+          return acc;
+        }, 0)),
+        (totalTransactions = transactions.reduce(function (acc, transaction) {
+          if (
+            category.name.toLowerCase() ===
+              transaction.category.toLowerCase() &&
+            transaction.transactionType.toLowerCase() === "expense"
+          ) {
+            acc = acc + transaction.amount;
+          }
+          return acc;
+        }, 0)),
+        {
+          id: category._id,
+          category: category.name,
+          budget: totalExpenses,
+          spent: totalTransactions,
+          variance: totalExpenses - totalTransactions,
+        }
+      )
+    );
+  }
   return (
     <>
       <h3>Spend Analysis</h3>
@@ -109,7 +144,7 @@ const SpendAnalysisPage = ({ history }) => {
 
       {loading ? (
         <Spinner animation="border" />
-      ) : transactions ? (
+      ) : tableItems ? (
         <>
           <Table bordered striped hover className="mb-5">
             <thead>
@@ -121,8 +156,8 @@ const SpendAnalysisPage = ({ history }) => {
               </tr>
             </thead>
             <tbody>
-              {budget.categories.map((category) => (
-                <tr key={category._id}>
+              {/* {budget.categories.map((category) => (
+                <tr key={category._id} id={category._id}>
                   <td>{category.name}</td>
                   <td>
                     ${" "}
@@ -150,7 +185,6 @@ const SpendAnalysisPage = ({ history }) => {
                     }, 0)}
                   </td>
                   <td>
-                    ${" "}
                     {budget.monthlyExpenses.reduce(function (acc, expense) {
                       if (
                         category.name.toLowerCase() ===
@@ -173,18 +207,43 @@ const SpendAnalysisPage = ({ history }) => {
                       }, 0)}
                   </td>
                 </tr>
-              ))}
+              ))} */}
+              {tableItems.map((item) =>
+                item.variance < 0 ? (
+                  <tr key={item.id} className="table-danger">
+                    <td>{item.category}</td>
+                    <td>{item.budget}</td>
+                    <td>{item.spent}</td>
+                    <td>{item.variance}</td>
+                  </tr>
+                ) : (
+                  <tr key={item.id}>
+                    <td>{item.category}</td>
+                    <td>{item.budget}</td>
+                    <td>{item.spent}</td>
+                    <td>{item.variance}</td>
+                  </tr>
+                )
+              )}
             </tbody>
           </Table>
           <Table striped bordered hover>
             <thead>
               <tr>
+                <th>Budget Expenses</th>
                 <th>Total Spent</th>
                 <th>Total Left</th>
               </tr>
             </thead>
             <tbody>
               <tr>
+                <td>
+                  ${" "}
+                  {budget.monthlyExpenses.reduce(
+                    (acc, expense) => acc + expense.amount,
+                    0
+                  )}
+                </td>
                 <td>
                   ${" "}
                   {transactions.reduce(

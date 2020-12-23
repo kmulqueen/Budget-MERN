@@ -12,10 +12,24 @@ const BudgetViewPage = ({ history }) => {
     if (!userInfo) {
       history.push("/login");
     } else if (userInfo && !budget) {
-      history.push("/budget/update");
+      history.push("/");
+    }
+    if (
+      budget.monthlyIncome.length === 0 ||
+      budget.monthlyExpenses.length === 0 ||
+      budget.categories.length === 0
+    ) {
+      history.push("/");
     }
   }, [userInfo, history, budget]);
-  return <>{budget && <Budget userBudget={budget} />}</>;
+  return (
+    <>
+      {budget &&
+        budget.monthlyIncome.length &&
+        budget.monthlyExpenses.length &&
+        budget.categories.length && <Budget userBudget={budget} />}
+    </>
+  );
 };
 
 export default BudgetViewPage;

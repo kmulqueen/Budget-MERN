@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { LinkContainer } from "react-router-bootstrap";
 import { Button, Spinner } from "react-bootstrap";
 import Budget from "../../components/Budget";
 import Message from "../../components/Message";
@@ -45,6 +46,26 @@ const HomePage = ({ history }) => {
             <>
               <p>You haven't created a budget.</p>
               <Button onClick={createHandler}>Create Budget</Button>
+            </>
+          ) : !budget.monthlyIncome.length &&
+            !budget.monthlyExpenses.length &&
+            !budget.categories.length ? (
+            <>
+              <h4>You need to create some categories to start your budget!</h4>
+              <LinkContainer to="/budget/categories">
+                <Button>Create Categories</Button>
+              </LinkContainer>
+            </>
+          ) : (!budget.monthlyIncome.length && budget.categories.length) ||
+            (!budget.monthlyExpenses.length && budget.categories.length) ? (
+            <>
+              <h4>
+                You need to have at least 1 monthly income item and 1 monthly
+                expense. Update your budget!
+              </h4>
+              <LinkContainer to="/budget/update">
+                <Button>Update Budget</Button>
+              </LinkContainer>
             </>
           ) : (
             <Budget userBudget={budget} />
