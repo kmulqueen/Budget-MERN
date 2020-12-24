@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Container, Form, Button, Col, Row } from "react-bootstrap";
+import { Form, Button, Col, Row } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import {
   getUserBudget,
@@ -101,7 +101,7 @@ const EditBudgetItemPage = ({ history, match }) => {
   ]);
 
   return (
-    <Container>
+    <>
       <LinkContainer to="/budget/view">
         <Button variant="outline-secondary" className="mb-4">
           View Budget
@@ -161,7 +161,7 @@ const EditBudgetItemPage = ({ history, match }) => {
           </Col>
         </Row>
       </Form>
-    </Container>
+    </>
   );
 };
 

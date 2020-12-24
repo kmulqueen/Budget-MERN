@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Form, Button, Container, InputGroup, Row, Col } from "react-bootstrap";
+import { Form, Button, InputGroup, Row, Col } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import Message from "../../components/Message";
 import {
@@ -157,7 +157,7 @@ const EditBudgetPage = ({ history }) => {
   }, [userInfo, history, dispatch, successAdd, budget]);
 
   return (
-    <Container>
+    <>
       <LinkContainer to="/budget/view">
         <Button variant="outline-secondary">View Budget</Button>
       </LinkContainer>
@@ -285,7 +285,7 @@ const EditBudgetPage = ({ history }) => {
           </Button>
         )}
       </Form>
-    </Container>
+    </>
   );
 };
 

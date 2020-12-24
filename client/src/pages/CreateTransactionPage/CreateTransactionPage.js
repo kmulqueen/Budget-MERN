@@ -63,7 +63,7 @@ const CreateTransactionPage = ({ history }) => {
     }
 
     if (success) {
-      history.push("/");
+      history.push("/transactions/all");
     }
   }, [history, userInfo, success, budget, budgetError, dispatch]);
   return (

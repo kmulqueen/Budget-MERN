@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Container, Table, Button, Col, Form, Spinner } from "react-bootstrap";
+import { Table, Button, Col, Form, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Moment from "react-moment";
 import Message from "../../components/Message";
@@ -72,8 +72,15 @@ const ViewTransactionsPage = ({ history }) => {
       dispatch(getUsersTransactions(filter));
     }
   }, [history, userInfo, filter, dispatch, budget, budgetError]);
+
+  // Sort categories alphabetically
+  if (budget && budget.categories.length) {
+    budget.categories.sort((a, b) =>
+      a.name.localeCompare(b.name, "en", { sensitivity: "base" })
+    );
+  }
   return (
-    <Container>
+    <>
       <h1>Transactions</h1>
       {error && (
         <>
@@ -178,7 +185,7 @@ const ViewTransactionsPage = ({ history }) => {
               </Form>
             </>
           )}
-          <Table striped bordered hover>
+          <Table striped bordered hover responsive size="sm">
             <thead>
               <tr>
                 <th>Date</th>
@@ -214,7 +221,7 @@ const ViewTransactionsPage = ({ history }) => {
       ) : (
         !transactions && error && null
       )}
-    </Container>
+    </>
   );
 };
 

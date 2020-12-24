@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { LinkContainer } from "react-router-bootstrap";
-import { Container, Form, Button, Row, Col } from "react-bootstrap";
+import { Form, Button, Row, Col } from "react-bootstrap";
 import {
   getTransaction,
   getTransactionReset,
@@ -101,7 +101,7 @@ const EditTransactionPage = ({ history, match }) => {
     budgetError,
   ]);
   return (
-    <Container>
+    <>
       <LinkContainer to="/transactions/all">
         <Button variant="outline-secondary" className="mb-4">
           View Transactions
@@ -168,7 +168,7 @@ const EditTransactionPage = ({ history, match }) => {
           </Col>
         </Row>
       </Form>
-    </Container>
+    </>
   );
 };
 

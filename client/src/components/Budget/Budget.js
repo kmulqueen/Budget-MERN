@@ -6,7 +6,7 @@ const Budget = ({ userBudget }) => {
   return (
     <>
       <h3>Monthly Income</h3>
-      <Table striped bordered hover className="mb-5">
+      <Table striped bordered hover responsive size="sm" className="mb-5">
         <thead>
           <tr>
             <th>Description</th>
@@ -33,7 +33,7 @@ const Budget = ({ userBudget }) => {
         </tbody>
       </Table>
       <h3>Monthly Expenses</h3>
-      <Table striped bordered hover className="mb-5">
+      <Table striped bordered hover responsive size="sm" className="mb-5">
         <thead>
           <tr>
             <th>Description</th>
@@ -60,7 +60,7 @@ const Budget = ({ userBudget }) => {
         </tbody>
       </Table>
       <h3>Funds</h3>
-      <Table striped bordered hover className="mb-5">
+      <Table striped bordered hover responsive size="sm" className="mb-5">
         <thead>
           <tr>
             <th>Discretionary Funds</th>

@@ -58,11 +58,13 @@ const SpendAnalysisPage = ({ history }) => {
     }
   }, [history, dispatch, userInfo, budget, budgetError, filter]);
 
-  // Initialize table items to map through to create table
-  let tableItems;
+  // Initialize table items & total items to map through to create table with possible 'table-danger' class
+  let tableItems, totalItems;
   if (budget && transactions) {
     let totalExpenses, totalTransactions;
+    // Map through each category in budget
     tableItems = budget.categories.map((category) => {
+      // Calculate total expense amount for category
       totalExpenses = budget.monthlyExpenses.reduce(function (acc, expense) {
         if (
           category.name.toLowerCase() === expense.category.name.toLowerCase()
@@ -72,6 +74,7 @@ const SpendAnalysisPage = ({ history }) => {
         return acc;
       }, 0);
 
+      // Calculate total transaction amount for category
       totalTransactions = transactions.reduce(function (acc, transaction) {
         if (
           category.name.toLowerCase() === transaction.category.toLowerCase() &&
@@ -82,6 +85,7 @@ const SpendAnalysisPage = ({ history }) => {
         return acc;
       }, 0);
 
+      // Return an object with information for the category
       return {
         id: category._id,
         category: category.name,
@@ -90,6 +94,31 @@ const SpendAnalysisPage = ({ history }) => {
         variance: totalExpenses - totalTransactions,
       };
     });
+    // Sort categories alphabetically
+    tableItems.sort((a, b) =>
+      a.category.localeCompare(b.category, "en", { sensitivity: "base" })
+    );
+
+    // Assign totalItems to an object
+    totalItems = {
+      // Calculate total expense amount in budget
+      totalBudgetExpenses: budget.monthlyExpenses.reduce(
+        (acc, expense) => acc + expense.amount,
+        0
+      ),
+      // Calculate total amount spent in budget
+      totalSpent: transactions.reduce(
+        (acc, transaction) => acc + transaction.amount,
+        0
+      ),
+      // Calculate total amount left in budget
+      totalLeft:
+        budget.monthlyExpenses.reduce(
+          (acc, expense) => acc + expense.amount,
+          0
+        ) -
+        transactions.reduce((acc, transaction) => acc + transaction.amount, 0),
+    };
   }
   return (
     <>
@@ -147,7 +176,7 @@ const SpendAnalysisPage = ({ history }) => {
         <Spinner animation="border" />
       ) : tableItems ? (
         <>
-          <Table bordered striped hover className="mb-5">
+          <Table bordered striped hover responsive size="sm" className="mb-5">
             <thead>
               <tr>
                 <th>Category</th>
@@ -176,7 +205,7 @@ const SpendAnalysisPage = ({ history }) => {
               )}
             </tbody>
           </Table>
-          <Table striped bordered hover>
+          <Table striped bordered hover responsive size="sm">
             <thead>
               <tr>
                 <th>Budget Expenses</th>
@@ -186,31 +215,13 @@ const SpendAnalysisPage = ({ history }) => {
             </thead>
             <tbody>
               <tr>
-                <td>
-                  ${" "}
-                  {budget.monthlyExpenses.reduce(
-                    (acc, expense) => acc + expense.amount,
-                    0
-                  )}
-                </td>
-                <td>
-                  ${" "}
-                  {transactions.reduce(
-                    (acc, transaction) => acc + transaction.amount,
-                    0
-                  )}
-                </td>
-                <td>
-                  ${" "}
-                  {budget.monthlyExpenses.reduce(
-                    (acc, expense) => acc + expense.amount,
-                    0
-                  ) -
-                    transactions.reduce(
-                      (acc, transaction) => acc + transaction.amount,
-                      0
-                    )}
-                </td>
+                <td>$ {totalItems.totalBudgetExpenses}</td>
+                <td>$ {totalItems.totalSpent}</td>
+                {totalItems.totalLeft < 0 ? (
+                  <td className="table-danger">$ {totalItems.totalLeft}</td>
+                ) : (
+                  <td>${totalItems.totalLeft}</td>
+                )}
               </tr>
             </tbody>
           </Table>

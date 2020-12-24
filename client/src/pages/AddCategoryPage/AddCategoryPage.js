@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Container, Form, Button, Badge } from "react-bootstrap";
+import { Form, Button, Badge } from "react-bootstrap";
 import Message from "../../components/Message";
 import { getUserBudget, createUserCategory } from "../../actions/budgetActions";
 
@@ -74,8 +74,15 @@ const AddCategoryPage = ({ history }) => {
     }
   }, [success, budget, history, userInfo, dispatch]);
 
+  // Sort categories alphabetically
+  if (budget && budget.categories.length) {
+    budget.categories.sort((a, b) =>
+      a.name.localeCompare(b.name, "en", { sensitivity: "base" })
+    );
+  }
+
   return (
-    <Container>
+    <>
       <h3>Add New Categories</h3>
       <Form onSubmit={handleSubmit} className="mb-3">
         {categoryError && <Message variant="danger">{categoryError}</Message>}
@@ -111,9 +118,14 @@ const AddCategoryPage = ({ history }) => {
           </Badge>
         ))
       ) : (
-        <Form.Text>You haven't created any categories yet.</Form.Text>
+        <Form.Text>
+          You haven't created any categories yet. Some examples would include:{" "}
+          <strong>
+            Job, Rent, Gas, Groceries, Utilities, Entertainment, etc.
+          </strong>
+        </Form.Text>
       )}
-    </Container>
+    </>
   );
 };
 

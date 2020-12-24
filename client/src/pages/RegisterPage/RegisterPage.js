@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Form, Button, Container, Spinner, Row, Col } from "react-bootstrap";
+import { Form, Button, Spinner, Row, Col } from "react-bootstrap";
 import Message from "../../components/Message";
 import { registerUser } from "../../actions/userActions";
 import { Link } from "react-router-dom";
@@ -40,7 +40,7 @@ const RegisterPage = ({ history }) => {
   };
 
   return (
-    <Container>
+    <>
       {loading && <Spinner animation="grow" />}
       {error && <Message variant="danger">{error}</Message>}
       {message && <Message variant="danger">{message}</Message>}
@@ -97,7 +97,7 @@ const RegisterPage = ({ history }) => {
           Already have an account? <Link to="/login">Login Here</Link>
         </Col>
       </Row>
-    </Container>
+    </>
   );
 };
 
