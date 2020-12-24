@@ -22,7 +22,7 @@ const EditBudgetItemPage = ({ history, match }) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
   const userBudget = useSelector((state) => state.userBudget);
-  const { budget } = userBudget;
+  const { budget, error: budgetError } = userBudget;
   const userGetBudgetItem = useSelector((state) => state.userGetBudgetItem);
   const { budgetItem } = userGetBudgetItem;
   const userUpdateBudgetItem = useSelector(
@@ -60,6 +60,10 @@ const EditBudgetItemPage = ({ history, match }) => {
     // If user isn't logged in, redirect to login page
     if (!userInfo) {
       history.push("/login");
+    } else if (userInfo && !budget) {
+      dispatch(getUserBudget());
+    } else if (userInfo && budgetError) {
+      history.push("/");
     }
 
     if (successUpdate) {
@@ -92,6 +96,8 @@ const EditBudgetItemPage = ({ history, match }) => {
     type,
     successUpdate,
     successDelete,
+    budget,
+    budgetError,
   ]);
 
   return (

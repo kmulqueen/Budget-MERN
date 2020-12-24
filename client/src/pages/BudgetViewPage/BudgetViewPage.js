@@ -1,17 +1,24 @@
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Budget from "../../components/Budget";
+import { getUserBudget } from "../../actions/budgetActions";
 
 const BudgetViewPage = ({ history }) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
   const userBudget = useSelector((state) => state.userBudget);
-  const { budget } = userBudget;
+  const { budget, error } = userBudget;
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!userInfo) {
       history.push("/login");
     } else if (userInfo && !budget) {
+      dispatch(getUserBudget());
+    }
+
+    if (error) {
       history.push("/");
     }
     if (
@@ -21,7 +28,7 @@ const BudgetViewPage = ({ history }) => {
     ) {
       history.push("/");
     }
-  }, [userInfo, history, budget]);
+  }, [userInfo, history, budget, dispatch, error]);
   return (
     <>
       {budget &&

@@ -154,7 +154,7 @@ const EditBudgetPage = ({ history }) => {
       // Redirect to home page
       history.push("/");
     }
-  }, [userInfo, history, dispatch, successAdd]);
+  }, [userInfo, history, dispatch, successAdd, budget]);
 
   return (
     <Container>

@@ -17,7 +17,7 @@ const CreateTransactionPage = ({ history }) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
   const userBudget = useSelector((state) => state.userBudget);
-  const { budget, loading } = userBudget;
+  const { budget, loading, error: budgetError } = userBudget;
   const addTransaction = useSelector((state) => state.addTransaction);
   const { success, error } = addTransaction;
 
@@ -56,7 +56,8 @@ const CreateTransactionPage = ({ history }) => {
     } else if (
       (budget && budget.monthlyIncome.length === 0) ||
       (budget && budget.monthlyExpenses.length === 0) ||
-      (budget && budget.categories.length === 0)
+      (budget && budget.categories.length === 0) ||
+      budgetError
     ) {
       history.push("/");
     }
@@ -64,7 +65,7 @@ const CreateTransactionPage = ({ history }) => {
     if (success) {
       history.push("/");
     }
-  }, [history, userInfo, success, budget, dispatch]);
+  }, [history, userInfo, success, budget, budgetError, dispatch]);
   return (
     <>
       <h1>Add Transaction</h1>

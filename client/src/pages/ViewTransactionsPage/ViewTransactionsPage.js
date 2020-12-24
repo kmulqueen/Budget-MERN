@@ -13,7 +13,7 @@ const ViewTransactionsPage = ({ history }) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
   const userBudget = useSelector((state) => state.userBudget);
-  const { budget } = userBudget;
+  const { budget, error: budgetError } = userBudget;
   const getUserTransactions = useSelector((state) => state.getUserTransactions);
   const { transactions, error, loading } = getUserTransactions;
 
@@ -62,12 +62,16 @@ const ViewTransactionsPage = ({ history }) => {
       dispatch(getUserBudget());
     }
 
+    if (userInfo && budgetError) {
+      history.push("/");
+    }
+
     if (filter === {}) {
       dispatch(getUsersTransactions({}));
     } else {
       dispatch(getUsersTransactions(filter));
     }
-  }, [history, userInfo, filter, dispatch]);
+  }, [history, userInfo, filter, dispatch, budget, budgetError]);
   return (
     <Container>
       <h1>Transactions</h1>

@@ -10,7 +10,7 @@ const SpendAnalysisPage = ({ history }) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
   const userBudget = useSelector((state) => state.userBudget);
-  const { budget } = userBudget;
+  const { budget, error: budgetError } = userBudget;
   const getUserTransactions = useSelector((state) => state.getUserTransactions);
   const { transactions, error, loading } = getUserTransactions;
 
@@ -45,8 +45,10 @@ const SpendAnalysisPage = ({ history }) => {
   useEffect(() => {
     if (!userInfo) {
       history.push("/login");
-    } else if (!budget) {
+    } else if (userInfo && !budget) {
       dispatch(getUserBudget());
+    } else if (userInfo && budgetError) {
+      history.push("/");
     }
 
     if (filter === {}) {
@@ -54,41 +56,40 @@ const SpendAnalysisPage = ({ history }) => {
     } else {
       dispatch(getUsersTransactions(filter));
     }
-  }, [history, dispatch, userInfo, budget, filter]);
+  }, [history, dispatch, userInfo, budget, budgetError, filter]);
 
   // Initialize table items to map through to create table
   let tableItems;
   if (budget && transactions) {
     let totalExpenses, totalTransactions;
-    tableItems = budget.categories.map(
-      (category) => (
-        (totalExpenses = budget.monthlyExpenses.reduce(function (acc, expense) {
-          if (
-            category.name.toLowerCase() === expense.category.name.toLowerCase()
-          ) {
-            acc = acc + expense.amount;
-          }
-          return acc;
-        }, 0)),
-        (totalTransactions = transactions.reduce(function (acc, transaction) {
-          if (
-            category.name.toLowerCase() ===
-              transaction.category.toLowerCase() &&
-            transaction.transactionType.toLowerCase() === "expense"
-          ) {
-            acc = acc + transaction.amount;
-          }
-          return acc;
-        }, 0)),
-        {
-          id: category._id,
-          category: category.name,
-          budget: totalExpenses,
-          spent: totalTransactions,
-          variance: totalExpenses - totalTransactions,
+    tableItems = budget.categories.map((category) => {
+      totalExpenses = budget.monthlyExpenses.reduce(function (acc, expense) {
+        if (
+          category.name.toLowerCase() === expense.category.name.toLowerCase()
+        ) {
+          acc = acc + expense.amount;
         }
-      )
-    );
+        return acc;
+      }, 0);
+
+      totalTransactions = transactions.reduce(function (acc, transaction) {
+        if (
+          category.name.toLowerCase() === transaction.category.toLowerCase() &&
+          transaction.transactionType.toLowerCase() === "expense"
+        ) {
+          acc = acc + transaction.amount;
+        }
+        return acc;
+      }, 0);
+
+      return {
+        id: category._id,
+        category: category.name,
+        budget: totalExpenses,
+        spent: totalTransactions,
+        variance: totalExpenses - totalTransactions,
+      };
+    });
   }
   return (
     <>
@@ -160,16 +161,16 @@ const SpendAnalysisPage = ({ history }) => {
                 item.variance < 0 ? (
                   <tr key={item.id} className="table-danger">
                     <td>{item.category}</td>
-                    <td>{item.budget}</td>
-                    <td>{item.spent}</td>
-                    <td>{item.variance}</td>
+                    <td>${item.budget}</td>
+                    <td>${item.spent}</td>
+                    <td>$ {item.variance}</td>
                   </tr>
                 ) : (
                   <tr key={item.id}>
                     <td>{item.category}</td>
-                    <td>{item.budget}</td>
-                    <td>{item.spent}</td>
-                    <td>{item.variance}</td>
+                    <td>${item.budget}</td>
+                    <td>${item.spent}</td>
+                    <td>${item.variance}</td>
                   </tr>
                 )
               )}
