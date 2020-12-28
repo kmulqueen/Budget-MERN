@@ -58,7 +58,7 @@ const SpendAnalysisPage = ({ history }) => {
     }
   }, [history, dispatch, userInfo, budget, budgetError, filter]);
 
-  // Initialize table items & total items to map through to create table with possible 'table-danger' class
+  // Initialize table items & total items to map through to create table with possible rows that have 'table-danger' class
   let tableItems, totalItems;
   if (budget && transactions) {
     let totalExpenses, totalTransactions;
